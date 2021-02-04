@@ -54,6 +54,11 @@ class Shop
      */
     private $subscriptors;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=User::class, inversedBy="shops_rated")
+     */
+    private $users_rated;
+
     public function __construct()
     {
         $this->location_id = new ArrayCollection();
@@ -62,6 +67,7 @@ class Shop
         $this->comentaries = new ArrayCollection();
         $this->posts = new ArrayCollection();
         $this->subscriptors = new ArrayCollection();
+        $this->users_rated = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -251,6 +257,30 @@ class Shop
     public function removeSubscriptor(User $subscriptor): self
     {
         $this->subscriptors->removeElement($subscriptor);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|User[]
+     */
+    public function getUsersRated(): Collection
+    {
+        return $this->users_rated;
+    }
+
+    public function addUsersRated(User $usersRated): self
+    {
+        if (!$this->users_rated->contains($usersRated)) {
+            $this->users_rated[] = $usersRated;
+        }
+
+        return $this;
+    }
+
+    public function removeUsersRated(User $usersRated): self
+    {
+        $this->users_rated->removeElement($usersRated);
 
         return $this;
     }

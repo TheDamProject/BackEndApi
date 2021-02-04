@@ -60,10 +60,16 @@ class User
      */
     private $posts_likes;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=Shop::class, mappedBy="users_rated")
+     */
+    private $shops_rated;
+
     public function __construct()
     {
         $this->shop_subscriptions = new ArrayCollection();
         $this->posts_likes = new ArrayCollection();
+        $this->shops_rated = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -192,6 +198,33 @@ class User
     {
         if ($this->posts_likes->removeElement($postsLike)) {
             $postsLike->removeUsersLike($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Shop[]
+     */
+    public function getShopsRated(): Collection
+    {
+        return $this->shops_rated;
+    }
+
+    public function addShopsRated(Shop $shopsRated): self
+    {
+        if (!$this->shops_rated->contains($shopsRated)) {
+            $this->shops_rated[] = $shopsRated;
+            $shopsRated->addUsersRated($this);
+        }
+
+        return $this;
+    }
+
+    public function removeShopsRated(Shop $shopsRated): self
+    {
+        if ($this->shops_rated->removeElement($shopsRated)) {
+            $shopsRated->removeUsersRated($this);
         }
 
         return $this;

@@ -1,0 +1,10 @@
+App\Entity\Location:
+  attributes:
+    id:
+      groups: ['location']
+    latitude:
+      groups: ['location']
+    longitude:
+      groups: ['location']
+    address:
+      groups: ['location']

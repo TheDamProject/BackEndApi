@@ -22,6 +22,11 @@ class Comentary
      */
     private $content;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=Shop::class, inversedBy="comentaries")
+     */
+    private $shop_id;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -35,6 +40,18 @@ class Comentary
     public function setContent(string $content): self
     {
         $this->content = $content;
+
+        return $this;
+    }
+
+    public function getShopId(): ?Shop
+    {
+        return $this->shop_id;
+    }
+
+    public function setShopId(?Shop $shop_id): self
+    {
+        $this->shop_id = $shop_id;
 
         return $this;
     }

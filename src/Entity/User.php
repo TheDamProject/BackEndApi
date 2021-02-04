@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -47,6 +49,22 @@ class User
      * @ORM\Column(type="string", length=255)
      */
     private $nick;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=Shop::class, mappedBy="subscriptors")
+     */
+    private $shop_subscriptions;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=Post::class, mappedBy="users_likes")
+     */
+    private $posts_likes;
+
+    public function __construct()
+    {
+        $this->shop_subscriptions = new ArrayCollection();
+        $this->posts_likes = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -121,6 +139,60 @@ class User
     public function setNick(string $nick): self
     {
         $this->nick = $nick;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Shop[]
+     */
+    public function getShopSubscriptions(): Collection
+    {
+        return $this->shop_subscriptions;
+    }
+
+    public function addShopSubscription(Shop $shopSubscription): self
+    {
+        if (!$this->shop_subscriptions->contains($shopSubscription)) {
+            $this->shop_subscriptions[] = $shopSubscription;
+            $shopSubscription->addSubscriptor($this);
+        }
+
+        return $this;
+    }
+
+    public function removeShopSubscription(Shop $shopSubscription): self
+    {
+        if ($this->shop_subscriptions->removeElement($shopSubscription)) {
+            $shopSubscription->removeSubscriptor($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Post[]
+     */
+    public function getPostsLikes(): Collection
+    {
+        return $this->posts_likes;
+    }
+
+    public function addPostsLike(Post $postsLike): self
+    {
+        if (!$this->posts_likes->contains($postsLike)) {
+            $this->posts_likes[] = $postsLike;
+            $postsLike->addUsersLike($this);
+        }
+
+        return $this;
+    }
+
+    public function removePostsLike(Post $postsLike): self
+    {
+        if ($this->posts_likes->removeElement($postsLike)) {
+            $postsLike->removeUsersLike($this);
+        }
 
         return $this;
     }

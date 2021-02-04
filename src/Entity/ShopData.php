@@ -42,6 +42,12 @@ class ShopData
      */
     private $rate_average;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=Shop::class, inversedBy="data_id")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $shop;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -103,6 +109,18 @@ class ShopData
     public function setRateAverage(float $rate_average): self
     {
         $this->rate_average = $rate_average;
+
+        return $this;
+    }
+
+    public function getShop(): ?Shop
+    {
+        return $this->shop;
+    }
+
+    public function setShop(?Shop $shop): self
+    {
+        $this->shop = $shop;
 
         return $this;
     }

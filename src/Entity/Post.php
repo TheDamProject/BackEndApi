@@ -37,13 +37,13 @@ class Post
     /**
      * @ORM\ManyToOne(targetEntity=Shop::class, inversedBy="posts")
      */
-    private $shop_id;
+    private $shop_related;
 
     /**
      * @ORM\ManyToOne(targetEntity=PostType::class, inversedBy="posts")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $type_id;
+    private $type_related;
 
     /**
      * @ORM\ManyToMany(targetEntity=User::class, inversedBy="posts_likes")
@@ -96,26 +96,26 @@ class Post
         return $this;
     }
 
-    public function getShopId(): ?Shop
+    public function getShopRelated(): ?Shop
     {
-        return $this->shop_id;
+        return $this->shop_related;
     }
 
-    public function setShopId(?Shop $shop_id): self
+    public function setShopRelated(?Shop $shop_related): self
     {
-        $this->shop_id = $shop_id;
+        $this->shop_related = $shop_related;
 
         return $this;
     }
 
-    public function getTypeId(): ?PostType
+    public function getTypeRelated(): ?PostType
     {
-        return $this->type_id;
+        return $this->type_related;
     }
 
-    public function setTypeId(?PostType $type_id): self
+    public function setTypeRelated(?PostType $type_related): self
     {
-        $this->type_id = $type_id;
+        $this->type_related = $type_related;
 
         return $this;
     }

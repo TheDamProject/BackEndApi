@@ -49,15 +49,16 @@ class Shop
      */
     private $posts;
 
-    /**
-     * @ORM\ManyToMany(targetEntity=User::class, inversedBy="shop_subscriptions")
-     */
-    private $subscriptors;
 
     /**
      * @ORM\ManyToMany(targetEntity=User::class, inversedBy="shops_rated")
      */
     private $users_rated;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=User::class, mappedBy="subscriptions")
+     */
+    private $users;
 
     public function __construct()
     {
@@ -66,8 +67,8 @@ class Shop
         $this->data_id = new ArrayCollection();
         $this->comentaries = new ArrayCollection();
         $this->posts = new ArrayCollection();
-        $this->subscriptors = new ArrayCollection();
         $this->users_rated = new ArrayCollection();
+        $this->users = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -189,7 +190,7 @@ class Shop
     {
         if (!$this->comentaries->contains($comentary)) {
             $this->comentaries[] = $comentary;
-            $comentary->setShopId($this);
+            $comentary->setShopRelated($this);
         }
 
         return $this;
@@ -199,8 +200,8 @@ class Shop
     {
         if ($this->comentaries->removeElement($comentary)) {
             // set the owning side to null (unless already changed)
-            if ($comentary->getShopId() === $this) {
-                $comentary->setShopId(null);
+            if ($comentary->getShopRelated() === $this) {
+                $comentary->setShopRelated(null);
             }
         }
 
@@ -219,7 +220,7 @@ class Shop
     {
         if (!$this->posts->contains($post)) {
             $this->posts[] = $post;
-            $post->setShopId($this);
+            $post->setShopRelated($this);
         }
 
         return $this;
@@ -229,34 +230,10 @@ class Shop
     {
         if ($this->posts->removeElement($post)) {
             // set the owning side to null (unless already changed)
-            if ($post->getShopId() === $this) {
-                $post->setShopId(null);
+            if ($post->getShopRelated() === $this) {
+                $post->setShopRelated(null);
             }
         }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|User[]
-     */
-    public function getSubscriptors(): Collection
-    {
-        return $this->subscriptors;
-    }
-
-    public function addSubscriptor(User $subscriptor): self
-    {
-        if (!$this->subscriptors->contains($subscriptor)) {
-            $this->subscriptors[] = $subscriptor;
-        }
-
-        return $this;
-    }
-
-    public function removeSubscriptor(User $subscriptor): self
-    {
-        $this->subscriptors->removeElement($subscriptor);
 
         return $this;
     }
@@ -281,6 +258,33 @@ class Shop
     public function removeUsersRated(User $usersRated): self
     {
         $this->users_rated->removeElement($usersRated);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|User[]
+     */
+    public function getUsers(): Collection
+    {
+        return $this->users;
+    }
+
+    public function addUser(User $user): self
+    {
+        if (!$this->users->contains($user)) {
+            $this->users[] = $user;
+            $user->addSubscription($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUser(User $user): self
+    {
+        if ($this->users->removeElement($user)) {
+            $user->removeSubscription($this);
+        }
 
         return $this;
     }

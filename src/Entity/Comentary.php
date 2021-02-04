@@ -25,7 +25,7 @@ class Comentary
     /**
      * @ORM\ManyToOne(targetEntity=Shop::class, inversedBy="comentaries")
      */
-    private $shop_id;
+    private $shop_related;
 
     public function getId(): ?int
     {
@@ -44,14 +44,14 @@ class Comentary
         return $this;
     }
 
-    public function getShopId(): ?Shop
+    public function getShopRelated(): ?Shop
     {
-        return $this->shop_id;
+        return $this->shop_related;
     }
 
-    public function setShopId(?Shop $shop_id): self
+    public function setShopRelated(?Shop $shop_related): self
     {
-        $this->shop_id = $shop_id;
+        $this->shop_related = $shop_related;
 
         return $this;
     }

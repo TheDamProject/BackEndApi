@@ -50,10 +50,7 @@ class User
      */
     private $nick;
 
-    /**
-     * @ORM\ManyToMany(targetEntity=Shop::class, mappedBy="subscriptors")
-     */
-    private $shop_subscriptions;
+
 
     /**
      * @ORM\ManyToMany(targetEntity=Post::class, mappedBy="users_likes")
@@ -65,11 +62,16 @@ class User
      */
     private $shops_rated;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=Shop::class, inversedBy="users")
+     */
+    private $subscriptions;
+
     public function __construct()
     {
-        $this->shop_subscriptions = new ArrayCollection();
         $this->posts_likes = new ArrayCollection();
         $this->shops_rated = new ArrayCollection();
+        $this->subscriptions = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -149,32 +151,6 @@ class User
         return $this;
     }
 
-    /**
-     * @return Collection|Shop[]
-     */
-    public function getShopSubscriptions(): Collection
-    {
-        return $this->shop_subscriptions;
-    }
-
-    public function addShopSubscription(Shop $shopSubscription): self
-    {
-        if (!$this->shop_subscriptions->contains($shopSubscription)) {
-            $this->shop_subscriptions[] = $shopSubscription;
-            $shopSubscription->addSubscriptor($this);
-        }
-
-        return $this;
-    }
-
-    public function removeShopSubscription(Shop $shopSubscription): self
-    {
-        if ($this->shop_subscriptions->removeElement($shopSubscription)) {
-            $shopSubscription->removeSubscriptor($this);
-        }
-
-        return $this;
-    }
 
     /**
      * @return Collection|Post[]
@@ -226,6 +202,30 @@ class User
         if ($this->shops_rated->removeElement($shopsRated)) {
             $shopsRated->removeUsersRated($this);
         }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Shop[]
+     */
+    public function getSubscriptions(): Collection
+    {
+        return $this->subscriptions;
+    }
+
+    public function addSubscription(Shop $subscription): self
+    {
+        if (!$this->subscriptions->contains($subscription)) {
+            $this->subscriptions[] = $subscription;
+        }
+
+        return $this;
+    }
+
+    public function removeSubscription(Shop $subscription): self
+    {
+        $this->subscriptions->removeElement($subscription);
 
         return $this;
     }

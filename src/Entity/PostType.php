@@ -63,7 +63,7 @@ class PostType
     {
         if (!$this->posts->contains($post)) {
             $this->posts[] = $post;
-            $post->setTypeId($this);
+            $post->setTypeRelated($this);
         }
 
         return $this;
@@ -73,8 +73,8 @@ class PostType
     {
         if ($this->posts->removeElement($post)) {
             // set the owning side to null (unless already changed)
-            if ($post->getTypeId() === $this) {
-                $post->setTypeId(null);
+            if ($post->getTypeRelated() === $this) {
+                $post->setTypeRelated(null);
             }
         }
 

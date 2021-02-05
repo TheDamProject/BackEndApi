@@ -4,6 +4,7 @@ namespace App\Controller\Api;
 
 
 use App\Entity\Comentary;
+use App\form\Type\CommentaryFormType;
 use App\form\Type\PostTypeFormType;
 use App\Repository\ComentaryRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -32,7 +33,7 @@ class CommentaryController extends AbstractFOSRestController
 
         $commentary = New Comentary();
 
-        $form = $this->createForm(PostTypeFormType::class,$commentary);
+        $form = $this->createForm(CommentaryFormType::class,$commentary);
         $form->handleRequest($request);
         if($form->isValid() && $form->isSubmitted()){
             $entityManager->persist($commentary);

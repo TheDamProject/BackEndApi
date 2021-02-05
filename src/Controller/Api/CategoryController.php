@@ -3,6 +3,7 @@
 namespace App\Controller\Api;
 
 use App\Entity\Category;
+use App\form\Type\CategoriesFormType;
 use App\form\Type\PostTypeFormType;
 use App\Repository\CategoryRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -33,7 +34,7 @@ class CategoryController extends AbstractFOSRestController
 
         $category = New Category();
 
-        $form = $this->createForm(PostTypeFormType::class,$category);
+        $form = $this->createForm(CategoriesFormType::class,$category);
         $form->handleRequest($request);
         if($form->isValid() && $form->isSubmitted()){
             $entityManager->persist($category);

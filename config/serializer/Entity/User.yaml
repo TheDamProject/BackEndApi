@@ -1,0 +1,22 @@
+App\Entity\User:
+  attributes:
+    id:
+      groups: ['user']
+    name:
+    groups: ['user']
+    surname:
+      groups: ['user']
+    email:
+      groups: ['user']
+    avatar:
+      groups: ['user']
+    uid_firebase:
+      groups: ['user']
+    nick:
+      groups: ['user']
+    post_likes:
+      groups: ['user']
+    shops_related:
+      groups: ['user']
+    subscriptions:
+      groups: ['user']

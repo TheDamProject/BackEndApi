@@ -1,0 +1,10 @@
+App\Entity\Shop:
+  attributes:
+    id:
+      groups: ['shop']
+    name:
+      groups: ['shop']
+    user_rated:
+      groups: ['shop']
+    users:
+      groups: ['shop']

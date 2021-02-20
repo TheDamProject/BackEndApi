@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\ComentaryRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -18,57 +20,97 @@ class Comentary
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="text")
      */
-    private $content;
-
-    /**
-     * @ORM\ManyToOne(targetEntity=Users::class, inversedBy="comentaries")
-     */
-    private $user_related;
+    private $contentComentary;
 
     /**
      * @ORM\ManyToOne(targetEntity=Shop::class, inversedBy="comentaries")
      */
-    private $shop_related;
+    private $shopComentaryRelated;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Client::class, mappedBy="clientComentaries")
+     */
+    private $clients;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Client::class, inversedBy="comentaries")
+     */
+    private $clientRelated;
+
+    public function __construct()
+    {
+        $this->clients = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getContent(): ?string
+    public function getContentComentary(): ?string
     {
-        return $this->content;
+        return $this->contentComentary;
     }
 
-    public function setContent(string $content): self
+    public function setContentComentary(string $contentComentary): self
     {
-        $this->content = $content;
+        $this->contentComentary = $contentComentary;
 
         return $this;
     }
 
-    public function getUserRelated(): ?Users
+    public function getShopComentaryRelated(): ?Shop
     {
-        return $this->user_related;
+        return $this->shopComentaryRelated;
     }
 
-    public function setUserRelated(?Users $user_related): self
+    public function setShopComentaryRelated(?Shop $shopComentaryRelated): self
     {
-        $this->user_related = $user_related;
+        $this->shopComentaryRelated = $shopComentaryRelated;
 
         return $this;
     }
 
-    public function getShopRelated(): ?Shop
+    /**
+     * @return Collection|Client[]
+     */
+    public function getClients(): Collection
     {
-        return $this->shop_related;
+        return $this->clients;
     }
 
-    public function setShopRelated(?Shop $shop_related): self
+    public function addClient(Client $client): self
     {
-        $this->shop_related = $shop_related;
+        if (!$this->clients->contains($client)) {
+            $this->clients[] = $client;
+            $client->setClientComentaries($this);
+        }
+
+        return $this;
+    }
+
+    public function removeClient(Client $client): self
+    {
+        if ($this->clients->removeElement($client)) {
+            // set the owning side to null (unless already changed)
+            if ($client->getClientComentaries() === $this) {
+                $client->setClientComentaries(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getClientRelated(): ?Client
+    {
+        return $this->clientRelated;
+    }
+
+    public function setClientRelated(?Client $clientRelated): self
+    {
+        $this->clientRelated = $clientRelated;
 
         return $this;
     }

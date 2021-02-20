@@ -2,15 +2,15 @@
 
 namespace App\Entity;
 
-use App\Repository\PostTypeRepository;
+use App\Repository\TypePostRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass=PostTypeRepository::class)
+ * @ORM\Entity(repositoryClass=TypePostRepository::class)
  */
-class PostType
+class TypePost
 {
     /**
      * @ORM\Id
@@ -25,13 +25,13 @@ class PostType
     private $description;
 
     /**
-     * @ORM\OneToMany(targetEntity=Post::class, mappedBy="type")
+     * @ORM\OneToMany(targetEntity=Post::class, mappedBy="typeOf")
      */
-    private $posts;
+    private $postsOfThisType;
 
     public function __construct()
     {
-        $this->posts = new ArrayCollection();
+        $this->postsOfThisType = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -54,27 +54,27 @@ class PostType
     /**
      * @return Collection|Post[]
      */
-    public function getPosts(): Collection
+    public function getPostsOfThisType(): Collection
     {
-        return $this->posts;
+        return $this->postsOfThisType;
     }
 
-    public function addPost(Post $post): self
+    public function addPostsOfThisType(Post $postsOfThisType): self
     {
-        if (!$this->posts->contains($post)) {
-            $this->posts[] = $post;
-            $post->setType($this);
+        if (!$this->postsOfThisType->contains($postsOfThisType)) {
+            $this->postsOfThisType[] = $postsOfThisType;
+            $postsOfThisType->setTypeOf($this);
         }
 
         return $this;
     }
 
-    public function removePost(Post $post): self
+    public function removePostsOfThisType(Post $postsOfThisType): self
     {
-        if ($this->posts->removeElement($post)) {
+        if ($this->postsOfThisType->removeElement($postsOfThisType)) {
             // set the owning side to null (unless already changed)
-            if ($post->getType() === $this) {
-                $post->setType(null);
+            if ($postsOfThisType->getTypeOf() === $this) {
+                $postsOfThisType->setTypeOf(null);
             }
         }
 

@@ -33,9 +33,14 @@ class Location
     private $address;
 
     /**
-     * @ORM\Column(type="text", nullable=true)
+     * @ORM\Column(type="string", length=512, nullable=true)
      */
-    private $google_id;
+    private $id_google;
+
+    /**
+     * @ORM\OneToOne(targetEntity=Shop::class, mappedBy="location", cascade={"persist", "remove"})
+     */
+    private $shopLocation;
 
     public function getId(): ?int
     {
@@ -78,14 +83,36 @@ class Location
         return $this;
     }
 
-    public function getGoogleId(): ?string
+    public function getIdGoogle(): ?string
     {
-        return $this->google_id;
+        return $this->id_google;
     }
 
-    public function setGoogleId(?string $google_id): self
+    public function setIdGoogle(?string $id_google): self
     {
-        $this->google_id = $google_id;
+        $this->id_google = $id_google;
+
+        return $this;
+    }
+
+    public function getShopLocation(): ?Shop
+    {
+        return $this->shopLocation;
+    }
+
+    public function setShopLocation(?Shop $shopLocation): self
+    {
+        // unset the owning side of the relation if necessary
+        if ($shopLocation === null && $this->shopLocation !== null) {
+            $this->shopLocation->setLocation(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($shopLocation !== null && $shopLocation->getLocation() !== $this) {
+            $shopLocation->setLocation($this);
+        }
+
+        $this->shopLocation = $shopLocation;
 
         return $this;
     }

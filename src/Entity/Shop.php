@@ -25,48 +25,38 @@ class Shop
     private $name;
 
     /**
-     * @ORM\ManyToOne(targetEntity=ShopData::class)
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\OneToOne(targetEntity=DataShop::class, inversedBy="shopRelated", cascade={"persist", "remove"})
      */
     private $data;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Location::class)
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\OneToOne(targetEntity=Location::class, inversedBy="shopLocation", cascade={"persist", "remove"})
      */
     private $location;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Category::class, inversedBy="shops")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\ManyToOne(targetEntity=Category::class, inversedBy="shopsCategoryRelated")
      */
-    private $category;
+    private $categoryRelated;
 
     /**
-     * @ORM\OneToMany(targetEntity=Post::class, mappedBy="shop_related")
+     * @ORM\OneToMany(targetEntity=Post::class, mappedBy="postOfShop")
      */
-    private $posts;
+    private $postsOfTHisShop;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Users::class, mappedBy="subscriptions")
-     */
-    private $subscriptors;
-
-    /**
-     * @ORM\ManyToMany(targetEntity=Users::class, mappedBy="votes")
-     */
-    private $users_vote;
-
-    /**
-     * @ORM\OneToMany(targetEntity=Comentary::class, mappedBy="shop_related")
+     * @ORM\OneToMany(targetEntity=Comentary::class, mappedBy="shopComentaryRelated")
      */
     private $comentaries;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=Client::class, inversedBy="likeShop")
+     */
+    private $clientLikeShop;
+
     public function __construct()
     {
-        $this->posts = new ArrayCollection();
-        $this->subscriptors = new ArrayCollection();
-        $this->users_vote = new ArrayCollection();
+        $this->postsOfTHisShop = new ArrayCollection();
         $this->comentaries = new ArrayCollection();
     }
 
@@ -87,12 +77,12 @@ class Shop
         return $this;
     }
 
-    public function getData(): ?ShopData
+    public function getData(): ?DataShop
     {
         return $this->data;
     }
 
-    public function setData(?ShopData $data): self
+    public function setData(?DataShop $data): self
     {
         $this->data = $data;
 
@@ -111,14 +101,14 @@ class Shop
         return $this;
     }
 
-    public function getCategory(): ?Category
+    public function getCategoryRelated(): ?Category
     {
-        return $this->category;
+        return $this->categoryRelated;
     }
 
-    public function setCategory(?Category $category): self
+    public function setCategoryRelated(?Category $categoryRelated): self
     {
-        $this->category = $category;
+        $this->categoryRelated = $categoryRelated;
 
         return $this;
     }
@@ -126,82 +116,28 @@ class Shop
     /**
      * @return Collection|Post[]
      */
-    public function getPosts(): Collection
+    public function getPostsOfTHisShop(): Collection
     {
-        return $this->posts;
+        return $this->postsOfTHisShop;
     }
 
-    public function addPost(Post $post): self
+    public function addPostsOfTHisShop(Post $postsOfTHisShop): self
     {
-        if (!$this->posts->contains($post)) {
-            $this->posts[] = $post;
-            $post->setShopRelated($this);
+        if (!$this->postsOfTHisShop->contains($postsOfTHisShop)) {
+            $this->postsOfTHisShop[] = $postsOfTHisShop;
+            $postsOfTHisShop->setPostOfShop($this);
         }
 
         return $this;
     }
 
-    public function removePost(Post $post): self
+    public function removePostsOfTHisShop(Post $postsOfTHisShop): self
     {
-        if ($this->posts->removeElement($post)) {
+        if ($this->postsOfTHisShop->removeElement($postsOfTHisShop)) {
             // set the owning side to null (unless already changed)
-            if ($post->getShopRelated() === $this) {
-                $post->setShopRelated(null);
+            if ($postsOfTHisShop->getPostOfShop() === $this) {
+                $postsOfTHisShop->setPostOfShop(null);
             }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|Users[]
-     */
-    public function getSubscriptors(): Collection
-    {
-        return $this->subscriptors;
-    }
-
-    public function addSubscriptor(Users $subscriptor): self
-    {
-        if (!$this->subscriptors->contains($subscriptor)) {
-            $this->subscriptors[] = $subscriptor;
-            $subscriptor->addSubscription($this);
-        }
-
-        return $this;
-    }
-
-    public function removeSubscriptor(Users $subscriptor): self
-    {
-        if ($this->subscriptors->removeElement($subscriptor)) {
-            $subscriptor->removeSubscription($this);
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|Users[]
-     */
-    public function getUsersVote(): Collection
-    {
-        return $this->users_vote;
-    }
-
-    public function addUsersVote(Users $usersVote): self
-    {
-        if (!$this->users_vote->contains($usersVote)) {
-            $this->users_vote[] = $usersVote;
-            $usersVote->addVote($this);
-        }
-
-        return $this;
-    }
-
-    public function removeUsersVote(Users $usersVote): self
-    {
-        if ($this->users_vote->removeElement($usersVote)) {
-            $usersVote->removeVote($this);
         }
 
         return $this;
@@ -219,7 +155,7 @@ class Shop
     {
         if (!$this->comentaries->contains($comentary)) {
             $this->comentaries[] = $comentary;
-            $comentary->setShopRelated($this);
+            $comentary->setShopComentaryRelated($this);
         }
 
         return $this;
@@ -229,10 +165,22 @@ class Shop
     {
         if ($this->comentaries->removeElement($comentary)) {
             // set the owning side to null (unless already changed)
-            if ($comentary->getShopRelated() === $this) {
-                $comentary->setShopRelated(null);
+            if ($comentary->getShopComentaryRelated() === $this) {
+                $comentary->setShopComentaryRelated(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getClientLikeShop(): ?Client
+    {
+        return $this->clientLikeShop;
+    }
+
+    public function setClientLikeShop(?Client $clientLikeShop): self
+    {
+        $this->clientLikeShop = $clientLikeShop;
 
         return $this;
     }

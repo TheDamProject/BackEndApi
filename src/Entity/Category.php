@@ -25,13 +25,13 @@ class Category
     private $name;
 
     /**
-     * @ORM\OneToMany(targetEntity=Shop::class, mappedBy="category", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity=Shop::class, mappedBy="categoryRelated")
      */
-    private $shops;
+    private $shopsCategoryRelated;
 
     public function __construct()
     {
-        $this->shops = new ArrayCollection();
+        $this->shopsCategoryRelated = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -54,27 +54,27 @@ class Category
     /**
      * @return Collection|Shop[]
      */
-    public function getShops(): Collection
+    public function getShopsCategoryRelated(): Collection
     {
-        return $this->shops;
+        return $this->shopsCategoryRelated;
     }
 
-    public function addShop(Shop $shop): self
+    public function addShopsCategoryRelated(Shop $shopsCategoryRelated): self
     {
-        if (!$this->shops->contains($shop)) {
-            $this->shops[] = $shop;
-            $shop->setCategory($this);
+        if (!$this->shopsCategoryRelated->contains($shopsCategoryRelated)) {
+            $this->shopsCategoryRelated[] = $shopsCategoryRelated;
+            $shopsCategoryRelated->setCategoryRelated($this);
         }
 
         return $this;
     }
 
-    public function removeShop(Shop $shop): self
+    public function removeShopsCategoryRelated(Shop $shopsCategoryRelated): self
     {
-        if ($this->shops->removeElement($shop)) {
+        if ($this->shopsCategoryRelated->removeElement($shopsCategoryRelated)) {
             // set the owning side to null (unless already changed)
-            if ($shop->getCategory() === $this) {
-                $shop->setCategory(null);
+            if ($shopsCategoryRelated->getCategoryRelated() === $this) {
+                $shopsCategoryRelated->setCategoryRelated(null);
             }
         }
 

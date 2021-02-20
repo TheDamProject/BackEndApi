@@ -33,14 +33,19 @@ class Post
     private $image;
 
     /**
-     * @ORM\ManyToOne(targetEntity=PostType::class, inversedBy="posts")
+     * @ORM\ManyToOne(targetEntity=TypePost::class, inversedBy="postsOfThisType")
      */
-    private $type;
+    private $typeOf;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Shop::class, inversedBy="posts")
+     * @ORM\ManyToOne(targetEntity=Shop::class, inversedBy="postsOfTHisShop")
      */
-    private $shop_related;
+    private $postOfShop;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Client::class, inversedBy="likePost")
+     */
+    private $likeOfClient;
 
     public function getId(): ?int
     {
@@ -83,26 +88,38 @@ class Post
         return $this;
     }
 
-    public function getType(): ?PostType
+    public function getTypeOf(): ?TypePost
     {
-        return $this->type;
+        return $this->typeOf;
     }
 
-    public function setType(?PostType $type): self
+    public function setTypeOf(?TypePost $typeOf): self
     {
-        $this->type = $type;
+        $this->typeOf = $typeOf;
 
         return $this;
     }
 
-    public function getShopRelated(): ?Shop
+    public function getPostOfShop(): ?Shop
     {
-        return $this->shop_related;
+        return $this->postOfShop;
     }
 
-    public function setShopRelated(?Shop $shop_related): self
+    public function setPostOfShop(?Shop $postOfShop): self
     {
-        $this->shop_related = $shop_related;
+        $this->postOfShop = $postOfShop;
+
+        return $this;
+    }
+
+    public function getLikeOfClient(): ?Client
+    {
+        return $this->likeOfClient;
+    }
+
+    public function setLikeOfClient(?Client $likeOfClient): self
+    {
+        $this->likeOfClient = $likeOfClient;
 
         return $this;
     }

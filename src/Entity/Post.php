@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\PostRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -43,9 +45,16 @@ class Post
     private $postOfShop;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Client::class, inversedBy="likePost")
+     * @ORM\OneToMany(targetEntity=Client::class, mappedBy="postLike")
      */
-    private $likeOfClient;
+    private $likesClientsList;
+
+    public function __construct()
+    {
+        $this->likesClientsList = new ArrayCollection();
+    }
+
+
 
     public function getId(): ?int
     {
@@ -112,15 +121,34 @@ class Post
         return $this;
     }
 
-    public function getLikeOfClient(): ?Client
+    /**
+     * @return Collection|Client[]
+     */
+    public function getLikesClientsList(): Collection
     {
-        return $this->likeOfClient;
+        return $this->likesClientsList;
     }
 
-    public function setLikeOfClient(?Client $likeOfClient): self
+    public function addLikesClientsList(Client $likesClientsList): self
     {
-        $this->likeOfClient = $likeOfClient;
+        if (!$this->likesClientsList->contains($likesClientsList)) {
+            $this->likesClientsList[] = $likesClientsList;
+            $likesClientsList->setPostLike($this);
+        }
 
         return $this;
     }
+
+    public function removeLikesClientsList(Client $likesClientsList): self
+    {
+        if ($this->likesClientsList->removeElement($likesClientsList)) {
+            // set the owning side to null (unless already changed)
+            if ($likesClientsList->getPostLike() === $this) {
+                $likesClientsList->setPostLike(null);
+            }
+        }
+
+        return $this;
+    }
+
 }

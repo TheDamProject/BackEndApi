@@ -16,7 +16,6 @@ class ShopDataFormType extends AbstractType
             ->add('isWhatsapp')
             ->add('description')
             ->add('image')
-            ->add('rateAverage')
             ->add('shopRelated')
         ;
     }

@@ -8,3 +8,5 @@ App\Entity\Location:
       groups: ['location']
     address:
       groups: ['location']
+    id_google:
+      groups: ['location']

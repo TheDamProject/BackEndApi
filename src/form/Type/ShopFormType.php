@@ -13,10 +13,7 @@ class ShopFormType extends AbstractType
     {
         $builder
             ->add('name')
-            ->add('data')
-            ->add('location')
-            ->add('categoryRelated')
-            ->add('clientLikeShop')
+
         ;
     }
 

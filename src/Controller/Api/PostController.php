@@ -7,7 +7,6 @@ use App\form\Type\LocationFormType;
 use App\form\Type\PostFormType;
 use App\Repository\LocationRepository;
 use App\Repository\PostRepository;
-use App\Repository\PostTypeRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\Controller\Annotations as Rest;

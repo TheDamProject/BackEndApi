@@ -54,20 +54,20 @@ class Client
      */
     private $comentaries;
 
-    /**
-     * @ORM\OneToMany(targetEntity=Post::class, mappedBy="likeOfClient")
-     */
-    private $likePost;
 
     /**
      * @ORM\OneToMany(targetEntity=Shop::class, mappedBy="clientLikeShop")
      */
     private $likeShop;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=Post::class, inversedBy="likesClientsList")
+     */
+    private $postLike;
+
     public function __construct()
     {
         $this->comentaries = new ArrayCollection();
-        $this->likePost = new ArrayCollection();
         $this->likeShop = new ArrayCollection();
     }
 
@@ -179,36 +179,6 @@ class Client
     }
 
     /**
-     * @return Collection|Post[]
-     */
-    public function getLikePost(): Collection
-    {
-        return $this->likePost;
-    }
-
-    public function addLikePost(Post $likePost): self
-    {
-        if (!$this->likePost->contains($likePost)) {
-            $this->likePost[] = $likePost;
-            $likePost->setLikeOfClient($this);
-        }
-
-        return $this;
-    }
-
-    public function removeLikePost(Post $likePost): self
-    {
-        if ($this->likePost->removeElement($likePost)) {
-            // set the owning side to null (unless already changed)
-            if ($likePost->getLikeOfClient() === $this) {
-                $likePost->setLikeOfClient(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
      * @return Collection|Shop[]
      */
     public function getLikeShop(): Collection
@@ -234,6 +204,18 @@ class Client
                 $likeShop->setClientLikeShop(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getPostLike(): ?Post
+    {
+        return $this->postLike;
+    }
+
+    public function setPostLike(?Post $postLike): self
+    {
+        $this->postLike = $postLike;
 
         return $this;
     }

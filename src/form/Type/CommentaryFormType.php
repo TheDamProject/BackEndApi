@@ -3,8 +3,9 @@
 
 namespace App\form\Type;
 
-use App\Entity\Comentary;
+use App\form\Model\CommentaryDto;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -14,15 +15,15 @@ class CommentaryFormType extends AbstractType
     {
         $builder
             ->add('contentComentary')
-            ->add('shopComentaryRelated')
-            ->add('clientRelated')
+            ->add('shopComentaryRelated' , IntegerType::class)
+            ->add('clientRelated' , IntegerType::class)
         ;
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => Comentary::class,
+            'data_class' => CommentaryDto::class,
         ]);
     }
 

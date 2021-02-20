@@ -17,7 +17,6 @@ class PostFormType extends AbstractType
             ->add('image')
             ->add('typeOf')
             ->add('postOfShop')
-            ->add('likeOfClient')
         ;
     }
 

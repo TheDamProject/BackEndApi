@@ -2,19 +2,13 @@
 
 namespace App\Controller\Api;
 
-use App\Entity\Post;
 use App\Entity\Shop;
-use App\form\Type\PostFormType;
 use App\form\Type\ShopFormType;
-use App\Repository\PostRepository;
 use App\Repository\ShopRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
-use FOS\RestBundle\Controller\Annotations as Rest;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use FOS\RestBundle\Controller\Annotations as Rest;
 
 class ShopController extends AbstractFOSRestController
 {

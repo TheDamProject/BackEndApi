@@ -2,13 +2,12 @@
 
 namespace App\Controller\Api;
 
+use App\Entity\DataShop;
 use App\Entity\Post;
-use App\Entity\ShopData;
 use App\form\Type\PostFormType;
 use App\form\Type\ShopDataFormType;
 use App\Repository\DataShopRepository;
 use App\Repository\PostRepository;
-use App\Repository\ShopDataRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\Controller\Annotations as Rest;
@@ -33,7 +32,7 @@ class ShopDataController extends AbstractFOSRestController
 
     public function addLocation(EntityManagerInterface $entityManager, Request $request)
     {
-        $shopData = New ShopData();
+        $shopData = New DataShop();
         $form = $this->createForm(ShopDataFormType::class, $shopData);
         $form->handleRequest($request);
         if($form->isValid() && $form->isSubmitted()){

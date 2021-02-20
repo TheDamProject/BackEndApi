@@ -2,23 +2,22 @@
 
 namespace App\Controller\Api;
 
+use App\Entity\Client;
 use App\Entity\Post;
-use App\Entity\User;
 use App\form\Type\PostFormType;
-use App\form\Type\UserFormType;
+use App\form\Type\ClientFormType;
 use App\Repository\ClientRepository;
 use App\Repository\PostRepository;
-use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpFoundation\Request;
 
-class UserController extends AbstractFOSRestController
+class ClientController extends AbstractFOSRestController
 {
     /**
      * @Rest\Get(path="/users")
-     * @Rest\View(serializerGroups={"user"}, serializerEnableMaxDepthChecks=true)
+     * @Rest\View(serializerGroups={"client"}, serializerEnableMaxDepthChecks=true)
      */
     public function getLocations(ClientRepository $locationRepository)
     {
@@ -27,13 +26,13 @@ class UserController extends AbstractFOSRestController
 
     /**
      * @Rest\Post(path="/users/add")
-     * @Rest\View(serializerGroups={"user"}, serializerEnableMaxDepthChecks=true)
+     * @Rest\View(serializerGroups={"client"}, serializerEnableMaxDepthChecks=true)
      */
 
     public function addLocation(EntityManagerInterface $entityManager, Request $request)
     {
-        $user = New User();
-        $form = $this->createForm(UserFormType::class, $user);
+        $user = New Client();
+        $form = $this->createForm(ClientFormType::class, $user);
         $form->handleRequest($request);
         if($form->isValid() && $form->isSubmitted()){
             $entityManager->persist($user);

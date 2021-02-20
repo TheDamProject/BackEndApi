@@ -1,6 +1,6 @@
 <?php
 
-namespace App\form\Type;
+namespace App\Form;
 
 use App\Entity\Category;
 use Symfony\Component\Form\AbstractType;
@@ -12,8 +12,7 @@ class CategoriesFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('category_name')
-            ->add('shop')
+            ->add('name')
         ;
     }
 
@@ -23,6 +22,7 @@ class CategoriesFormType extends AbstractType
             'data_class' => Category::class,
         ]);
     }
+
 
     public function getBlockPrefix(): string
     {

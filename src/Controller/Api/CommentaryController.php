@@ -28,7 +28,7 @@ class CommentaryController extends AbstractFOSRestController
      * @Rest\Post(path="/commentaries/add")
      * @Rest\View (serializerGroups={"commentary"}, serializerEnableMaxDepthChecks=true)
      */
-    public function addPostType(ComentaryRepository  $repository, Request $request, EntityManagerInterface $entityManager)
+    public function addPostType( Request $request, EntityManagerInterface $entityManager)
     {
 
         $commentary = New Comentary();

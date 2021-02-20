@@ -1,6 +1,6 @@
 <?php
 
-namespace App\form\Type;
+namespace App\Form;
 
 use App\Entity\Shop;
 use Symfony\Component\Form\AbstractType;
@@ -13,8 +13,10 @@ class ShopFormType extends AbstractType
     {
         $builder
             ->add('name')
-            ->add('users_rated')
-            ->add('users')
+            ->add('data')
+            ->add('location')
+            ->add('categoryRelated')
+            ->add('clientLikeShop')
         ;
     }
 
@@ -24,7 +26,6 @@ class ShopFormType extends AbstractType
             'data_class' => Shop::class,
         ]);
     }
-
 
     public function getBlockPrefix(): string
     {

@@ -6,6 +6,7 @@ use App\Entity\Post;
 use App\Entity\ShopData;
 use App\form\Type\PostFormType;
 use App\form\Type\ShopDataFormType;
+use App\Repository\DataShopRepository;
 use App\Repository\PostRepository;
 use App\Repository\ShopDataRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -20,7 +21,7 @@ class ShopDataController extends AbstractFOSRestController
      * @Rest\Get(path="/shop_data")
      * @Rest\View(serializerGroups={"shopData"}, serializerEnableMaxDepthChecks=true)
      */
-    public function getLocations(ShopDataRepository $locationRepository)
+    public function getLocations(DataShopRepository $locationRepository)
     {
         return $locationRepository->findAll();
     }

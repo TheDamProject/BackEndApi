@@ -1,8 +1,8 @@
 <?php
 
-namespace App\form\Type;
+namespace App\Form;
 
-use App\Entity\User;
+use App\Entity\Client;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -15,19 +15,16 @@ class UserFormType extends AbstractType
             ->add('name')
             ->add('surname')
             ->add('email')
+            ->add('nick')
             ->add('avatar')
             ->add('uid_firebase')
-            ->add('nick')
-            ->add('posts_likes')
-            ->add('shops_rated')
-            ->add('subscriptions')
         ;
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => User::class,
+            'data_class' => Client::class,
         ]);
     }
 

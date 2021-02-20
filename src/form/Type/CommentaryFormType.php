@@ -1,6 +1,6 @@
 <?php
 
-namespace App\form\Type;
+namespace App\Form;
 
 use App\Entity\Comentary;
 use Symfony\Component\Form\AbstractType;
@@ -12,8 +12,9 @@ class CommentaryFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('content')
-            ->add('shop_related')
+            ->add('contentComentary')
+            ->add('shopComentaryRelated')
+            ->add('clientRelated')
         ;
     }
 
@@ -23,6 +24,7 @@ class CommentaryFormType extends AbstractType
             'data_class' => Comentary::class,
         ]);
     }
+
     public function getBlockPrefix(): string
     {
         return '';

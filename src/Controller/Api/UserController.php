@@ -6,6 +6,7 @@ use App\Entity\Post;
 use App\Entity\User;
 use App\form\Type\PostFormType;
 use App\form\Type\UserFormType;
+use App\Repository\ClientRepository;
 use App\Repository\PostRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -19,7 +20,7 @@ class UserController extends AbstractFOSRestController
      * @Rest\Get(path="/users")
      * @Rest\View(serializerGroups={"user"}, serializerEnableMaxDepthChecks=true)
      */
-    public function getLocations(UserRepository $locationRepository)
+    public function getLocations(ClientRepository $locationRepository)
     {
         return $locationRepository->findAll();
     }

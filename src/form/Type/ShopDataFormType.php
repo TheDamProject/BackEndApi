@@ -1,8 +1,8 @@
 <?php
 
-namespace App\form\Type;
+namespace App\Form;
 
-use App\Entity\ShopData;
+use App\Entity\DataShop;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -13,18 +13,18 @@ class ShopDataFormType extends AbstractType
     {
         $builder
             ->add('phone')
-            ->add('isWhatsaap')
+            ->add('isWhatsapp')
             ->add('description')
             ->add('image')
-            ->add('rate_average')
-            ->add('shop')
+            ->add('rateAverage')
+            ->add('shopRelated')
         ;
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => ShopData::class,
+            'data_class' => DataShop::class,
         ]);
     }
 

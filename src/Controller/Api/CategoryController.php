@@ -29,7 +29,7 @@ class CategoryController extends AbstractFOSRestController
      * @Rest\Post(path="/categories/add")
      * @Rest\View (serializerGroups={"category"}, serializerEnableMaxDepthChecks=true)
      */
-    public function addPostType(CategoryRepository $repository, Request $request, EntityManagerInterface $entityManager)
+    public function addPostType( Request $request, EntityManagerInterface $entityManager)
     {
 
         $category = New Category();

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\form\Type;
+namespace App\Form;
 
 use App\Entity\Post;
 use Symfony\Component\Form\AbstractType;
@@ -13,11 +13,11 @@ class PostFormType extends AbstractType
     {
         $builder
             ->add('title')
-            ->add('post_content')
+            ->add('content')
             ->add('image')
-            ->add('shop_related')
-            ->add('type_related')
-            ->add('users_likes')
+            ->add('typeOf')
+            ->add('postOfShop')
+            ->add('likeOfClient')
         ;
     }
 

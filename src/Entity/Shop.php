@@ -25,50 +25,49 @@ class Shop
     private $name;
 
     /**
-     * @ORM\OneToMany(targetEntity=Location::class, mappedBy="shop", orphanRemoval=true)
+     * @ORM\ManyToOne(targetEntity=ShopData::class)
+     * @ORM\JoinColumn(nullable=false)
      */
-    private $location_id;
+    private $data;
 
     /**
-     * @ORM\OneToMany(targetEntity=Category::class, mappedBy="shop", orphanRemoval=true)
+     * @ORM\ManyToOne(targetEntity=Location::class)
+     * @ORM\JoinColumn(nullable=false)
      */
-    private $category_id;
+    private $location;
 
     /**
-     * @ORM\OneToMany(targetEntity=ShopData::class, mappedBy="shop", orphanRemoval=true)
+     * @ORM\ManyToOne(targetEntity=Category::class, inversedBy="shops")
+     * @ORM\JoinColumn(nullable=false)
      */
-    private $data_id;
+    private $category;
 
     /**
-     * @ORM\OneToMany(targetEntity=Comentary::class, mappedBy="shop_id")
-     */
-    private $comentaries;
-
-    /**
-     * @ORM\OneToMany(targetEntity=Post::class, mappedBy="shop_id")
+     * @ORM\OneToMany(targetEntity=Post::class, mappedBy="shop_related")
      */
     private $posts;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=Users::class, mappedBy="subscriptions")
+     */
+    private $subscriptors;
 
     /**
-     * @ORM\ManyToMany(targetEntity=User::class, inversedBy="shops_rated")
+     * @ORM\ManyToMany(targetEntity=Users::class, mappedBy="votes")
      */
-    private $users_rated;
+    private $users_vote;
 
     /**
-     * @ORM\ManyToMany(targetEntity=User::class, mappedBy="subscriptions")
+     * @ORM\OneToMany(targetEntity=Comentary::class, mappedBy="shop_related")
      */
-    private $users;
+    private $comentaries;
 
     public function __construct()
     {
-        $this->location_id = new ArrayCollection();
-        $this->category_id = new ArrayCollection();
-        $this->data_id = new ArrayCollection();
-        $this->comentaries = new ArrayCollection();
         $this->posts = new ArrayCollection();
-        $this->users_rated = new ArrayCollection();
-        $this->users = new ArrayCollection();
+        $this->subscriptors = new ArrayCollection();
+        $this->users_vote = new ArrayCollection();
+        $this->comentaries = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -88,122 +87,38 @@ class Shop
         return $this;
     }
 
-    /**
-     * @return Collection|Location[]
-     */
-    public function getLocationId(): Collection
+    public function getData(): ?ShopData
     {
-        return $this->location_id;
+        return $this->data;
     }
 
-    public function addLocationId(Location $locationId): self
+    public function setData(?ShopData $data): self
     {
-        if (!$this->location_id->contains($locationId)) {
-            $this->location_id[] = $locationId;
-            $locationId->setShop($this);
-        }
+        $this->data = $data;
 
         return $this;
     }
 
-    public function removeLocationId(Location $locationId): self
+    public function getLocation(): ?Location
     {
-        if ($this->location_id->removeElement($locationId)) {
-            // set the owning side to null (unless already changed)
-            if ($locationId->getShop() === $this) {
-                $locationId->setShop(null);
-            }
-        }
+        return $this->location;
+    }
+
+    public function setLocation(?Location $location): self
+    {
+        $this->location = $location;
 
         return $this;
     }
 
-    /**
-     * @return Collection|Category[]
-     */
-    public function getCategoryId(): Collection
+    public function getCategory(): ?Category
     {
-        return $this->category_id;
+        return $this->category;
     }
 
-    public function addCategoryId(Category $categoryId): self
+    public function setCategory(?Category $category): self
     {
-        if (!$this->category_id->contains($categoryId)) {
-            $this->category_id[] = $categoryId;
-            $categoryId->setShop($this);
-        }
-
-        return $this;
-    }
-
-    public function removeCategoryId(Category $categoryId): self
-    {
-        if ($this->category_id->removeElement($categoryId)) {
-            // set the owning side to null (unless already changed)
-            if ($categoryId->getShop() === $this) {
-                $categoryId->setShop(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|ShopData[]
-     */
-    public function getDataId(): Collection
-    {
-        return $this->data_id;
-    }
-
-    public function addDataId(ShopData $dataId): self
-    {
-        if (!$this->data_id->contains($dataId)) {
-            $this->data_id[] = $dataId;
-            $dataId->setShop($this);
-        }
-
-        return $this;
-    }
-
-    public function removeDataId(ShopData $dataId): self
-    {
-        if ($this->data_id->removeElement($dataId)) {
-            // set the owning side to null (unless already changed)
-            if ($dataId->getShop() === $this) {
-                $dataId->setShop(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|Comentary[]
-     */
-    public function getComentaries(): Collection
-    {
-        return $this->comentaries;
-    }
-
-    public function addComentary(Comentary $comentary): self
-    {
-        if (!$this->comentaries->contains($comentary)) {
-            $this->comentaries[] = $comentary;
-            $comentary->setShopRelated($this);
-        }
-
-        return $this;
-    }
-
-    public function removeComentary(Comentary $comentary): self
-    {
-        if ($this->comentaries->removeElement($comentary)) {
-            // set the owning side to null (unless already changed)
-            if ($comentary->getShopRelated() === $this) {
-                $comentary->setShopRelated(null);
-            }
-        }
+        $this->category = $category;
 
         return $this;
     }
@@ -239,51 +154,84 @@ class Shop
     }
 
     /**
-     * @return Collection|User[]
+     * @return Collection|Users[]
      */
-    public function getUsersRated(): Collection
+    public function getSubscriptors(): Collection
     {
-        return $this->users_rated;
+        return $this->subscriptors;
     }
 
-    public function addUsersRated(User $usersRated): self
+    public function addSubscriptor(Users $subscriptor): self
     {
-        if (!$this->users_rated->contains($usersRated)) {
-            $this->users_rated[] = $usersRated;
+        if (!$this->subscriptors->contains($subscriptor)) {
+            $this->subscriptors[] = $subscriptor;
+            $subscriptor->addSubscription($this);
         }
 
         return $this;
     }
 
-    public function removeUsersRated(User $usersRated): self
+    public function removeSubscriptor(Users $subscriptor): self
     {
-        $this->users_rated->removeElement($usersRated);
+        if ($this->subscriptors->removeElement($subscriptor)) {
+            $subscriptor->removeSubscription($this);
+        }
 
         return $this;
     }
 
     /**
-     * @return Collection|User[]
+     * @return Collection|Users[]
      */
-    public function getUsers(): Collection
+    public function getUsersVote(): Collection
     {
-        return $this->users;
+        return $this->users_vote;
     }
 
-    public function addUser(User $user): self
+    public function addUsersVote(Users $usersVote): self
     {
-        if (!$this->users->contains($user)) {
-            $this->users[] = $user;
-            $user->addSubscription($this);
+        if (!$this->users_vote->contains($usersVote)) {
+            $this->users_vote[] = $usersVote;
+            $usersVote->addVote($this);
         }
 
         return $this;
     }
 
-    public function removeUser(User $user): self
+    public function removeUsersVote(Users $usersVote): self
     {
-        if ($this->users->removeElement($user)) {
-            $user->removeSubscription($this);
+        if ($this->users_vote->removeElement($usersVote)) {
+            $usersVote->removeVote($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Comentary[]
+     */
+    public function getComentaries(): Collection
+    {
+        return $this->comentaries;
+    }
+
+    public function addComentary(Comentary $comentary): self
+    {
+        if (!$this->comentaries->contains($comentary)) {
+            $this->comentaries[] = $comentary;
+            $comentary->setShopRelated($this);
+        }
+
+        return $this;
+    }
+
+    public function removeComentary(Comentary $comentary): self
+    {
+        if ($this->comentaries->removeElement($comentary)) {
+            // set the owning side to null (unless already changed)
+            if ($comentary->getShopRelated() === $this) {
+                $comentary->setShopRelated(null);
+            }
         }
 
         return $this;

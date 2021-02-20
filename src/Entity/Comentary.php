@@ -18,9 +18,14 @@ class Comentary
     private $id;
 
     /**
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="string", length=255)
      */
     private $content;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Users::class, inversedBy="comentaries")
+     */
+    private $user_related;
 
     /**
      * @ORM\ManyToOne(targetEntity=Shop::class, inversedBy="comentaries")
@@ -40,6 +45,18 @@ class Comentary
     public function setContent(string $content): self
     {
         $this->content = $content;
+
+        return $this;
+    }
+
+    public function getUserRelated(): ?Users
+    {
+        return $this->user_related;
+    }
+
+    public function setUserRelated(?Users $user_related): self
+    {
+        $this->user_related = $user_related;
 
         return $this;
     }

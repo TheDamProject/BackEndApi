@@ -2,16 +2,15 @@
 
 namespace App\Entity;
 
-use App\Repository\UserRepository;
+use App\Repository\UsersRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass=UserRepository::class)
- * @ORM\Table(name="`user`")
+ * @ORM\Entity(repositoryClass=UsersRepository::class)
  */
-class User
+class Users
 {
     /**
      * @ORM\Id
@@ -36,12 +35,12 @@ class User
     private $email;
 
     /**
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="text", nullable=true)
      */
     private $avatar;
 
     /**
-     * @ORM\Column(type="string", length=150)
+     * @ORM\Column(type="text", nullable=true)
      */
     private $uid_firebase;
 
@@ -50,28 +49,31 @@ class User
      */
     private $nick;
 
-
-
     /**
-     * @ORM\ManyToMany(targetEntity=Post::class, mappedBy="users_likes")
-     */
-    private $posts_likes;
-
-    /**
-     * @ORM\ManyToMany(targetEntity=Shop::class, mappedBy="users_rated")
-     */
-    private $shops_rated;
-
-    /**
-     * @ORM\ManyToMany(targetEntity=Shop::class, inversedBy="users")
+     * @ORM\ManyToMany(targetEntity=Shop::class, inversedBy="subscriptors")
      */
     private $subscriptions;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=Shop::class, inversedBy="users_vote")
+     */
+    private $votes;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Post::class)
+     */
+    private $like_post;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Comentary::class, mappedBy="user_related")
+     */
+    private $comentaries;
+
     public function __construct()
     {
-        $this->posts_likes = new ArrayCollection();
-        $this->shops_rated = new ArrayCollection();
         $this->subscriptions = new ArrayCollection();
+        $this->votes = new ArrayCollection();
+        $this->comentaries = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -120,7 +122,7 @@ class User
         return $this->avatar;
     }
 
-    public function setAvatar(string $avatar): self
+    public function setAvatar(?string $avatar): self
     {
         $this->avatar = $avatar;
 
@@ -132,7 +134,7 @@ class User
         return $this->uid_firebase;
     }
 
-    public function setUidFirebase(string $uid_firebase): self
+    public function setUidFirebase(?string $uid_firebase): self
     {
         $this->uid_firebase = $uid_firebase;
 
@@ -147,61 +149,6 @@ class User
     public function setNick(string $nick): self
     {
         $this->nick = $nick;
-
-        return $this;
-    }
-
-
-    /**
-     * @return Collection|Post[]
-     */
-    public function getPostsLikes(): Collection
-    {
-        return $this->posts_likes;
-    }
-
-    public function addPostsLike(Post $postsLike): self
-    {
-        if (!$this->posts_likes->contains($postsLike)) {
-            $this->posts_likes[] = $postsLike;
-            $postsLike->addUsersLike($this);
-        }
-
-        return $this;
-    }
-
-    public function removePostsLike(Post $postsLike): self
-    {
-        if ($this->posts_likes->removeElement($postsLike)) {
-            $postsLike->removeUsersLike($this);
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|Shop[]
-     */
-    public function getShopsRated(): Collection
-    {
-        return $this->shops_rated;
-    }
-
-    public function addShopsRated(Shop $shopsRated): self
-    {
-        if (!$this->shops_rated->contains($shopsRated)) {
-            $this->shops_rated[] = $shopsRated;
-            $shopsRated->addUsersRated($this);
-        }
-
-        return $this;
-    }
-
-    public function removeShopsRated(Shop $shopsRated): self
-    {
-        if ($this->shops_rated->removeElement($shopsRated)) {
-            $shopsRated->removeUsersRated($this);
-        }
 
         return $this;
     }
@@ -226,6 +173,72 @@ class User
     public function removeSubscription(Shop $subscription): self
     {
         $this->subscriptions->removeElement($subscription);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Shop[]
+     */
+    public function getVotes(): Collection
+    {
+        return $this->votes;
+    }
+
+    public function addVote(Shop $vote): self
+    {
+        if (!$this->votes->contains($vote)) {
+            $this->votes[] = $vote;
+        }
+
+        return $this;
+    }
+
+    public function removeVote(Shop $vote): self
+    {
+        $this->votes->removeElement($vote);
+
+        return $this;
+    }
+
+    public function getLikePost(): ?Post
+    {
+        return $this->like_post;
+    }
+
+    public function setLikePost(?Post $like_post): self
+    {
+        $this->like_post = $like_post;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Comentary[]
+     */
+    public function getComentaries(): Collection
+    {
+        return $this->comentaries;
+    }
+
+    public function addComentary(Comentary $comentary): self
+    {
+        if (!$this->comentaries->contains($comentary)) {
+            $this->comentaries[] = $comentary;
+            $comentary->setUserRelated($this);
+        }
+
+        return $this;
+    }
+
+    public function removeComentary(Comentary $comentary): self
+    {
+        if ($this->comentaries->removeElement($comentary)) {
+            // set the owning side to null (unless already changed)
+            if ($comentary->getUserRelated() === $this) {
+                $comentary->setUserRelated(null);
+            }
+        }
 
         return $this;
     }

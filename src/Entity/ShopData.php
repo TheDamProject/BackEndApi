@@ -18,35 +18,29 @@ class ShopData
     private $id;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", nullable=true)
      */
     private $phone;
 
     /**
      * @ORM\Column(type="boolean")
      */
-    private $isWhatsaap;
+    private $isWhatsapp;
 
     /**
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="string", length=255)
      */
     private $description;
 
     /**
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="text", nullable=true)
      */
     private $image;
 
     /**
-     * @ORM\Column(type="float")
+     * @ORM\Column(type="float", nullable=true)
      */
     private $rate_average;
-
-    /**
-     * @ORM\ManyToOne(targetEntity=Shop::class, inversedBy="data_id")
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $shop;
 
     public function getId(): ?int
     {
@@ -58,21 +52,21 @@ class ShopData
         return $this->phone;
     }
 
-    public function setPhone(int $phone): self
+    public function setPhone(?int $phone): self
     {
         $this->phone = $phone;
 
         return $this;
     }
 
-    public function getIsWhatsaap(): ?bool
+    public function getIsWhatsapp(): ?bool
     {
-        return $this->isWhatsaap;
+        return $this->isWhatsapp;
     }
 
-    public function setIsWhatsaap(bool $isWhatsaap): self
+    public function setIsWhatsapp(bool $isWhatsapp): self
     {
-        $this->isWhatsaap = $isWhatsaap;
+        $this->isWhatsapp = $isWhatsapp;
 
         return $this;
     }
@@ -94,7 +88,7 @@ class ShopData
         return $this->image;
     }
 
-    public function setImage(string $image): self
+    public function setImage(?string $image): self
     {
         $this->image = $image;
 
@@ -106,21 +100,9 @@ class ShopData
         return $this->rate_average;
     }
 
-    public function setRateAverage(float $rate_average): self
+    public function setRateAverage(?float $rate_average): self
     {
         $this->rate_average = $rate_average;
-
-        return $this;
-    }
-
-    public function getShop(): ?Shop
-    {
-        return $this->shop;
-    }
-
-    public function setShop(?Shop $shop): self
-    {
-        $this->shop = $shop;
 
         return $this;
     }

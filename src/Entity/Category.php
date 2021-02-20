@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\CategoryRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -20,39 +22,61 @@ class Category
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $category_name;
+    private $name;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Shop::class, inversedBy="category_id")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\OneToMany(targetEntity=Shop::class, mappedBy="category", orphanRemoval=true)
      */
-    private $shop;
+    private $shops;
+
+    public function __construct()
+    {
+        $this->shops = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getCategoryName(): ?string
+    public function getName(): ?string
     {
-        return $this->category_name;
+        return $this->name;
     }
 
-    public function setCategoryName(string $category_name): self
+    public function setName(string $name): self
     {
-        $this->category_name = $category_name;
+        $this->name = $name;
 
         return $this;
     }
 
-    public function getShop(): ?Shop
+    /**
+     * @return Collection|Shop[]
+     */
+    public function getShops(): Collection
     {
-        return $this->shop;
+        return $this->shops;
     }
 
-    public function setShop(?Shop $shop): self
+    public function addShop(Shop $shop): self
     {
-        $this->shop = $shop;
+        if (!$this->shops->contains($shop)) {
+            $this->shops[] = $shop;
+            $shop->setCategory($this);
+        }
+
+        return $this;
+    }
+
+    public function removeShop(Shop $shop): self
+    {
+        if ($this->shops->removeElement($shop)) {
+            // set the owning side to null (unless already changed)
+            if ($shop->getCategory() === $this) {
+                $shop->setCategory(null);
+            }
+        }
 
         return $this;
     }

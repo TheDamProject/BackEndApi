@@ -22,10 +22,10 @@ class PostType
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $type;
+    private $description;
 
     /**
-     * @ORM\OneToMany(targetEntity=Post::class, mappedBy="type_id")
+     * @ORM\OneToMany(targetEntity=Post::class, mappedBy="type")
      */
     private $posts;
 
@@ -39,14 +39,14 @@ class PostType
         return $this->id;
     }
 
-    public function getType(): ?string
+    public function getDescription(): ?string
     {
-        return $this->type;
+        return $this->description;
     }
 
-    public function setType(string $type): self
+    public function setDescription(string $description): self
     {
-        $this->type = $type;
+        $this->description = $description;
 
         return $this;
     }
@@ -63,7 +63,7 @@ class PostType
     {
         if (!$this->posts->contains($post)) {
             $this->posts[] = $post;
-            $post->setTypeRelated($this);
+            $post->setType($this);
         }
 
         return $this;
@@ -73,8 +73,8 @@ class PostType
     {
         if ($this->posts->removeElement($post)) {
             // set the owning side to null (unless already changed)
-            if ($post->getTypeRelated() === $this) {
-                $post->setTypeRelated(null);
+            if ($post->getType() === $this) {
+                $post->setType(null);
             }
         }
 

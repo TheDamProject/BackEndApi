@@ -33,15 +33,9 @@ class Location
     private $address;
 
     /**
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="text", nullable=true)
      */
     private $google_id;
-
-    /**
-     * @ORM\ManyToOne(targetEntity=Shop::class, inversedBy="location_id")
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $shop;
 
     public function getId(): ?int
     {
@@ -89,21 +83,9 @@ class Location
         return $this->google_id;
     }
 
-    public function setGoogleId(string $google_id): self
+    public function setGoogleId(?string $google_id): self
     {
         $this->google_id = $google_id;
-
-        return $this;
-    }
-
-    public function getShop(): ?Shop
-    {
-        return $this->shop;
-    }
-
-    public function setShop(?Shop $shop): self
-    {
-        $this->shop = $shop;
 
         return $this;
     }

@@ -3,8 +3,6 @@
 namespace App\Entity;
 
 use App\Repository\PostRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -27,33 +25,22 @@ class Post
     /**
      * @ORM\Column(type="text")
      */
-    private $post_content;
+    private $content;
 
     /**
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="text", nullable=true)
      */
     private $image;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=PostType::class, inversedBy="posts")
+     */
+    private $type;
 
     /**
      * @ORM\ManyToOne(targetEntity=Shop::class, inversedBy="posts")
      */
     private $shop_related;
-
-    /**
-     * @ORM\ManyToOne(targetEntity=PostType::class, inversedBy="posts")
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $type_related;
-
-    /**
-     * @ORM\ManyToMany(targetEntity=User::class, inversedBy="posts_likes")
-     */
-    private $users_likes;
-
-    public function __construct()
-    {
-        $this->users_likes = new ArrayCollection();
-    }
 
     public function getId(): ?int
     {
@@ -72,14 +59,14 @@ class Post
         return $this;
     }
 
-    public function getPostContent(): ?string
+    public function getContent(): ?string
     {
-        return $this->post_content;
+        return $this->content;
     }
 
-    public function setPostContent(string $post_content): self
+    public function setContent(string $content): self
     {
-        $this->post_content = $post_content;
+        $this->content = $content;
 
         return $this;
     }
@@ -89,9 +76,21 @@ class Post
         return $this->image;
     }
 
-    public function setImage(string $image): self
+    public function setImage(?string $image): self
     {
         $this->image = $image;
+
+        return $this;
+    }
+
+    public function getType(): ?PostType
+    {
+        return $this->type;
+    }
+
+    public function setType(?PostType $type): self
+    {
+        $this->type = $type;
 
         return $this;
     }
@@ -104,42 +103,6 @@ class Post
     public function setShopRelated(?Shop $shop_related): self
     {
         $this->shop_related = $shop_related;
-
-        return $this;
-    }
-
-    public function getTypeRelated(): ?PostType
-    {
-        return $this->type_related;
-    }
-
-    public function setTypeRelated(?PostType $type_related): self
-    {
-        $this->type_related = $type_related;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|User[]
-     */
-    public function getUsersLikes(): Collection
-    {
-        return $this->users_likes;
-    }
-
-    public function addUsersLike(User $usersLike): self
-    {
-        if (!$this->users_likes->contains($usersLike)) {
-            $this->users_likes[] = $usersLike;
-        }
-
-        return $this;
-    }
-
-    public function removeUsersLike(User $usersLike): self
-    {
-        $this->users_likes->removeElement($usersLike);
 
         return $this;
     }

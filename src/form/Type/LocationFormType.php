@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Form;
+namespace App\form\Type;
 
 use App\Entity\Location;
 use Symfony\Component\Form\AbstractType;
@@ -16,7 +16,7 @@ class LocationFormType extends AbstractType
             ->add('longitude')
             ->add('address')
             ->add('id_google')
-            ->add('shopLocation')
+
         ;
     }
 

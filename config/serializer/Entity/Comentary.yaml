@@ -1,8 +1,0 @@
-App\Entity\Category:
-  attributes:
-    id:
-      groups: ['commentary']
-    content:
-      groups: ['commentary']
-    shop_related:
-      groups: ['commentary']

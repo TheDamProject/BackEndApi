@@ -1,6 +1,7 @@
 <?php
 
-namespace App\Form;
+
+namespace App\form\Type;
 
 use App\Entity\Comentary;
 use Symfony\Component\Form\AbstractType;

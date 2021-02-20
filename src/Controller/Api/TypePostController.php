@@ -2,20 +2,19 @@
 
 namespace App\Controller\Api;
 
-use App\Entity\PostType;
+
+use App\Entity\TypePost;
 use App\form\Type\PostTypeFormType;
-use App\Repository\PostTypeRepository;
 use App\Repository\TypePostRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
-use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpFoundation\Request;
+use FOS\RestBundle\Controller\Annotations;
 
-
-class PostTypeController extends AbstractFOSRestController
+class TypePostController extends AbstractFOSRestController
 {
     /**
-     * @Rest\Get(path="/post_types")
+     * @Rest\Get(path="/types")
      * @Rest\View (serializerGroups={"postType"}, serializerEnableMaxDepthChecks=true)
      */
     public function index(TypePostRepository $repository)
@@ -24,13 +23,13 @@ class PostTypeController extends AbstractFOSRestController
     }
 
     /**
-     * @Rest\Post(path="/post_types/add")
+     * @Rest\Post(path="/types/add")
      * @Rest\View (serializerGroups={"postType"}, serializerEnableMaxDepthChecks=true)
      */
     public function addPostType(Request $request, EntityManagerInterface $entityManager)
     {
 
-        $postType = New PostType();
+        $postType = New TypePost();
 
         $form = $this->createForm(PostTypeFormType::class,$postType);
         $form->handleRequest($request);

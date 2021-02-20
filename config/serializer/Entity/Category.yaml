@@ -1,6 +1,0 @@
-App\Entity\Category:
-  attributes:
-    id:
-      groups: ['category']
-    category_name:
-      groups: ['category']

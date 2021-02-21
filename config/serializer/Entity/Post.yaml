@@ -1,4 +1,4 @@
-App\Entity\Post
+App\Entity\Post:
   attributes:
       id:
         groups : ['post']

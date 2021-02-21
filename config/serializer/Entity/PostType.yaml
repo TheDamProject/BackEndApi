@@ -1,8 +1,8 @@
-  App\Entity\PostType
-  attributes:
-    id:
-      groups : ['postType']
-    type:
-      groups : ['postType']
+App\Entity\PostType:
+    attributes:
+      id:
+        groups : ['postType']
+      type:
+        groups : ['postType']
 
 

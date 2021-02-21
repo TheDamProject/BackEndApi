@@ -3,6 +3,7 @@
 namespace App\Form\Type;
 
 use App\Entity\PostType;
+use App\Form\Model\PostTypeDto;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -18,7 +19,7 @@ class TypeFormType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => PostType::class,
+            'data_class' => PostTypeDto::class,
         ]);
     }
     public function getName()

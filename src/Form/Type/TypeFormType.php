@@ -1,35 +1,37 @@
 <?php
 
-namespace App\form\Type;
+namespace App\Form\Type;
 
-use App\Entity\TypePost;
+use App\Entity\PostType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class PostTypeFormType extends AbstractType
+class TypeFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('description')
-        ;
+            ->add('type');
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => TypePost::class,
+            'data_class' => PostType::class,
         ]);
     }
+    public function getName()
+    {
+        return '';
 
-    public function getBlockPrefix(): string
+    }
+
+    public function getBlockPrefix()
     {
         return '';
     }
 
-    public function getName(): string
-    {
-        return '';
-    }
+
 }
+

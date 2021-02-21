@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\LocationRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -33,14 +35,19 @@ class Location
     private $address;
 
     /**
-     * @ORM\Column(type="string", length=512, nullable=true)
+     * @ORM\Column(type="text", nullable=true)
      */
     private $id_google;
 
     /**
-     * @ORM\OneToOne(targetEntity=Shop::class, mappedBy="location", cascade={"persist", "remove"})
+     * @ORM\OneToMany(targetEntity=Shop::class, mappedBy="location")
      */
-    private $shopLocation;
+    private $shopsInLocation;
+
+    public function __construct()
+    {
+        $this->shopsInLocation = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -95,24 +102,32 @@ class Location
         return $this;
     }
 
-    public function getShopLocation(): ?Shop
+    /**
+     * @return Collection|Shop[]
+     */
+    public function getShopsInLocation(): Collection
     {
-        return $this->shopLocation;
+        return $this->shopsInLocation;
     }
 
-    public function setShopLocation(?Shop $shopLocation): self
+    public function addShopsInLocation(Shop $shopsInLocation): self
     {
-        // unset the owning side of the relation if necessary
-        if ($shopLocation === null && $this->shopLocation !== null) {
-            $this->shopLocation->setLocation(null);
+        if (!$this->shopsInLocation->contains($shopsInLocation)) {
+            $this->shopsInLocation[] = $shopsInLocation;
+            $shopsInLocation->setLocation($this);
         }
 
-        // set the owning side of the relation if necessary
-        if ($shopLocation !== null && $shopLocation->getLocation() !== $this) {
-            $shopLocation->setLocation($this);
-        }
+        return $this;
+    }
 
-        $this->shopLocation = $shopLocation;
+    public function removeShopsInLocation(Shop $shopsInLocation): self
+    {
+        if ($this->shopsInLocation->removeElement($shopsInLocation)) {
+            // set the owning side to null (unless already changed)
+            if ($shopsInLocation->getLocation() === $this) {
+                $shopsInLocation->setLocation(null);
+            }
+        }
 
         return $this;
     }

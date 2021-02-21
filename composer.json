@@ -4,8 +4,9 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
-        "php": ">=7.2.5",
+        "php": ">=7.4",
         "ext-ctype": "*",
+        "ext-http": "*",
         "ext-iconv": "*",
         "composer/package-versions-deprecated": "1.11.99.1",
         "doctrine/annotations": "^1.0",
@@ -22,9 +23,9 @@
         "symfony/property-access": "5.2.*",
         "symfony/property-info": "5.2.*",
         "symfony/proxy-manager-bridge": "5.2.*",
+        "symfony/security-csrf": "5.2.*",
         "symfony/serializer": "5.2.*",
-        "symfony/yaml": "5.2.*",
-      "ext-http": "*"
+        "symfony/yaml": "5.2.*"
     },
     "require-dev": {
         "symfony/maker-bundle": "^1.28"

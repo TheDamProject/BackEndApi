@@ -1,0 +1,14 @@
+App\Entity\Post
+  attributes:
+      id:
+        groups : ['post']
+      title:
+        groups : ['post']
+      content:
+        groups : ['post']
+      image:
+        groups : ['post']
+      type:
+        groups : ['post']
+      shopRelated:
+        groups : ['post']

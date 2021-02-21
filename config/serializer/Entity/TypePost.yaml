@@ -1,6 +1,0 @@
-App\Entity\TypePost:
-  attributes:
-    id:
-      groups: ['postType']
-    description:
-      groups: ['postType']

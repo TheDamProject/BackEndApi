@@ -1,9 +1,0 @@
-App\Entity\CommentaryDto:
-  attributes:
-    id:
-      groups: [ 'commentary' ]
-    contentComentary:
-      groups: ['commentary']
-    clientRelated:
-      groups: [ 'commentary' ]
-

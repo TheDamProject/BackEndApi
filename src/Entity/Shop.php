@@ -25,39 +25,30 @@ class Shop
     private $name;
 
     /**
-     * @ORM\OneToOne(targetEntity=DataShop::class, inversedBy="shopRelated", cascade={"persist", "remove"})
+     * @ORM\OneToMany(targetEntity=Post::class, mappedBy="shopRelated")
      */
-    private $data;
+    private $posts;
 
     /**
-     * @ORM\OneToOne(targetEntity=Location::class, inversedBy="shopLocation", cascade={"persist", "remove"})
+     * @ORM\ManyToOne(targetEntity=Location::class, inversedBy="shopsInLocation")
+     * @ORM\JoinColumn(nullable=false)
      */
     private $location;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Category::class, inversedBy="shopsCategoryRelated")
+     * @ORM\OneToOne(targetEntity=ShopData::class, mappedBy="shopRelated", cascade={"persist", "remove"})
      */
-    private $categoryRelated;
+    private $shopData;
 
     /**
-     * @ORM\OneToMany(targetEntity=Post::class, mappedBy="postOfShop")
+     * @ORM\ManyToOne(targetEntity=ShopCategory::class, inversedBy="shopsInCategory")
+     * @ORM\JoinColumn(nullable=false)
      */
-    private $postsOfTHisShop;
-
-    /**
-     * @ORM\OneToMany(targetEntity=Comentary::class, mappedBy="shopComentaryRelated")
-     */
-    private $comentaries;
-
-    /**
-     * @ORM\ManyToOne(targetEntity=Client::class, inversedBy="likeShop")
-     */
-    private $clientLikeShop;
+    private $shopCategory;
 
     public function __construct()
     {
-        $this->postsOfTHisShop = new ArrayCollection();
-        $this->comentaries = new ArrayCollection();
+        $this->posts = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -77,14 +68,32 @@ class Shop
         return $this;
     }
 
-    public function getData(): ?DataShop
+    /**
+     * @return Collection|Post[]
+     */
+    public function getPosts(): Collection
     {
-        return $this->data;
+        return $this->posts;
     }
 
-    public function setData(?DataShop $data): self
+    public function addPost(Post $post): self
     {
-        $this->data = $data;
+        if (!$this->posts->contains($post)) {
+            $this->posts[] = $post;
+            $post->setShopRelated($this);
+        }
+
+        return $this;
+    }
+
+    public function removePost(Post $post): self
+    {
+        if ($this->posts->removeElement($post)) {
+            // set the owning side to null (unless already changed)
+            if ($post->getShopRelated() === $this) {
+                $post->setShopRelated(null);
+            }
+        }
 
         return $this;
     }
@@ -101,86 +110,31 @@ class Shop
         return $this;
     }
 
-    public function getCategoryRelated(): ?Category
+    public function getShopData(): ?ShopData
     {
-        return $this->categoryRelated;
+        return $this->shopData;
     }
 
-    public function setCategoryRelated(?Category $categoryRelated): self
+    public function setShopData(ShopData $shopData): self
     {
-        $this->categoryRelated = $categoryRelated;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|Post[]
-     */
-    public function getPostsOfTHisShop(): Collection
-    {
-        return $this->postsOfTHisShop;
-    }
-
-    public function addPostsOfTHisShop(Post $postsOfTHisShop): self
-    {
-        if (!$this->postsOfTHisShop->contains($postsOfTHisShop)) {
-            $this->postsOfTHisShop[] = $postsOfTHisShop;
-            $postsOfTHisShop->setPostOfShop($this);
+        // set the owning side of the relation if necessary
+        if ($shopData->getShopRelated() !== $this) {
+            $shopData->setShopRelated($this);
         }
 
-        return $this;
-    }
-
-    public function removePostsOfTHisShop(Post $postsOfTHisShop): self
-    {
-        if ($this->postsOfTHisShop->removeElement($postsOfTHisShop)) {
-            // set the owning side to null (unless already changed)
-            if ($postsOfTHisShop->getPostOfShop() === $this) {
-                $postsOfTHisShop->setPostOfShop(null);
-            }
-        }
+        $this->shopData = $shopData;
 
         return $this;
     }
 
-    /**
-     * @return Collection|Comentary[]
-     */
-    public function getComentaries(): Collection
+    public function getShopCategory(): ?ShopCategory
     {
-        return $this->comentaries;
+        return $this->shopCategory;
     }
 
-    public function addComentary(Comentary $comentary): self
+    public function setShopCategory(?ShopCategory $shopCategory): self
     {
-        if (!$this->comentaries->contains($comentary)) {
-            $this->comentaries[] = $comentary;
-            $comentary->setShopComentaryRelated($this);
-        }
-
-        return $this;
-    }
-
-    public function removeComentary(Comentary $comentary): self
-    {
-        if ($this->comentaries->removeElement($comentary)) {
-            // set the owning side to null (unless already changed)
-            if ($comentary->getShopComentaryRelated() === $this) {
-                $comentary->setShopComentaryRelated(null);
-            }
-        }
-
-        return $this;
-    }
-
-    public function getClientLikeShop(): ?Client
-    {
-        return $this->clientLikeShop;
-    }
-
-    public function setClientLikeShop(?Client $clientLikeShop): self
-    {
-        $this->clientLikeShop = $clientLikeShop;
+        $this->shopCategory = $shopCategory;
 
         return $this;
     }

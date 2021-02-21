@@ -3,8 +3,6 @@
 namespace App\Entity;
 
 use App\Repository\PostRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -35,26 +33,16 @@ class Post
     private $image;
 
     /**
-     * @ORM\ManyToOne(targetEntity=TypePost::class, inversedBy="postsOfThisType")
+     * @ORM\ManyToOne(targetEntity=PostType::class, inversedBy="postByType")
+     * @ORM\JoinColumn(nullable=false)
      */
-    private $typeOf;
+    private $type;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Shop::class, inversedBy="postsOfTHisShop")
+     * @ORM\ManyToOne(targetEntity=Shop::class, inversedBy="posts")
+     * @ORM\JoinColumn(nullable=false)
      */
-    private $postOfShop;
-
-    /**
-     * @ORM\OneToMany(targetEntity=Client::class, mappedBy="postLike")
-     */
-    private $likesClientsList;
-
-    public function __construct()
-    {
-        $this->likesClientsList = new ArrayCollection();
-    }
-
-
+    private $shopRelated;
 
     public function getId(): ?int
     {
@@ -97,58 +85,27 @@ class Post
         return $this;
     }
 
-    public function getTypeOf(): ?TypePost
+    public function getType(): ?PostType
     {
-        return $this->typeOf;
+        return $this->type;
     }
 
-    public function setTypeOf(?TypePost $typeOf): self
+    public function setType(?PostType $type): self
     {
-        $this->typeOf = $typeOf;
+        $this->type = $type;
 
         return $this;
     }
 
-    public function getPostOfShop(): ?Shop
+    public function getShopRelated(): ?Shop
     {
-        return $this->postOfShop;
+        return $this->shopRelated;
     }
 
-    public function setPostOfShop(?Shop $postOfShop): self
+    public function setShopRelated(?Shop $shopRelated): self
     {
-        $this->postOfShop = $postOfShop;
+        $this->shopRelated = $shopRelated;
 
         return $this;
     }
-
-    /**
-     * @return Collection|Client[]
-     */
-    public function getLikesClientsList(): Collection
-    {
-        return $this->likesClientsList;
-    }
-
-    public function addLikesClientsList(Client $likesClientsList): self
-    {
-        if (!$this->likesClientsList->contains($likesClientsList)) {
-            $this->likesClientsList[] = $likesClientsList;
-            $likesClientsList->setPostLike($this);
-        }
-
-        return $this;
-    }
-
-    public function removeLikesClientsList(Client $likesClientsList): self
-    {
-        if ($this->likesClientsList->removeElement($likesClientsList)) {
-            // set the owning side to null (unless already changed)
-            if ($likesClientsList->getPostLike() === $this) {
-                $likesClientsList->setPostLike(null);
-            }
-        }
-
-        return $this;
-    }
-
 }

@@ -1,0 +1,6 @@
+App\Entity\Shop:
+  attributes:
+    id:
+      groups : ['shop']
+    name:
+      groups: [ 'shop' ]

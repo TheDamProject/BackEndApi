@@ -76,13 +76,13 @@ class PostTypeController extends AbstractFOSRestController
            $postType = $handler->generateEntityFromDto($postTypeDto);
 
            if($handler->existsPostType($postTypeDto)){
-               throw new HttpException(304,'The PostType '. $postTypeDto->type.' exist!');
+               throw new HttpException(304,'The PostType '. $postTypeDto->getType().' exist!');
            }else{
                $handler->persistPostType($postType);
            }
 
         }
-        return new Response('Created :' .$postTypeDto->type. '' , Response::HTTP_CREATED);
+        return new Response('Created :' .$postTypeDto->getType(). '' , Response::HTTP_CREATED);
     }
 
 

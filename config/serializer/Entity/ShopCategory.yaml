@@ -1,0 +1,8 @@
+App\Entity\ShopCategory:
+  attributes:
+    id:
+      groups : ['category']
+    category:
+      groups : ['category']
+
+

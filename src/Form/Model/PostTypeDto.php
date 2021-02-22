@@ -8,8 +8,8 @@ use App\Entity\PostType;
 
 class PostTypeDto
 {
-    public ?int $id;
-    public ?string $type;
+    private ?int $id;
+    private ?string $type;
 
 
     public static function createDtoFromEntity(PostType $postType) : self
@@ -19,5 +19,39 @@ class PostTypeDto
         $dto->type = $postType->getType();
         return $dto;
     }
+
+    /**
+     * @return int|null
+     */
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param int|null $id
+     */
+    public function setId(?int $id): void
+    {
+        $this->id = $id;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getType(): ?string
+    {
+        return $this->type;
+    }
+
+    /**
+     * @param string|null $type
+     */
+    public function setType(?string $type): void
+    {
+        $this->type = $type;
+    }
+
+
 
 }

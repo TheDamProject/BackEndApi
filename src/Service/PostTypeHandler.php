@@ -24,7 +24,7 @@ class PostTypeHandler
     public function existsPostType( PostTypeDto $postTypeDto ) : bool
     {
 
-        $typeInRepo = $this->postTypeRepository->findBy(['type' => $postTypeDto->type]);
+        $typeInRepo = $this->postTypeRepository->findBy(['type' => $postTypeDto->getType()]);
         if(!$typeInRepo){
             $result = false;
         }else{
@@ -46,7 +46,7 @@ class PostTypeHandler
     public function generateEntityFromDto(PostTypeDto $postTypeDto) : PostType
     {
         $postType = new PostType();
-        $postType->setType($postTypeDto->type);
+        $postType->setType($postTypeDto->getType());
         return $postType;
     }
 

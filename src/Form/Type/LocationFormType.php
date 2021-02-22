@@ -2,29 +2,27 @@
 
 namespace App\Form\Type;
 
-use App\Entity\Post;
-use App\Form\Model\PostDto;
+use App\Form\Model\LocationDto;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class PostFormType extends AbstractType
+class LocationFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('title')
-            ->add('content')
-            ->add('image')
-            ->add('type')
-            ->add('shopRelated')
+            ->add('latitude')
+            ->add('longitude')
+            ->add('address')
+            ->add('id_google')
         ;
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => PostDto::class,
+            'data_class' => LocationDto::class,
         ]);
     }
 
@@ -38,6 +36,4 @@ class PostFormType extends AbstractType
     {
         return '';
     }
-
-
 }

@@ -13,6 +13,7 @@ use App\Form\Model\ShopDataDto;
 use App\Form\Model\ShopDto;
 use App\Repository\LocationRepository;
 use App\Repository\ShopCategoryRepository;
+use App\Repository\ShopDataRepository;
 use App\Repository\ShopRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityNotFoundException;
@@ -27,16 +28,17 @@ class ShopHandlerService
     private ShopRepository $shopRepository;
     private LocationRepository $locationRepository;
     private ShopCategoryRepository $categoryRepository;
+    private ShopDataRepository  $shopDataRepository;
     private EntityManagerInterface $entityManager;
     private LoggerInterface $logger;
 
-    public function __construct(LoggerInterface $logger,LocationRepository $locationRepository,ShopCategoryRepository $categoryRepository,ShopRepository $repository , EntityManagerInterface $entityManager)
+    public function __construct(ShopDataRepository  $shopDataRepository,LocationRepository $locationRepository,ShopCategoryRepository $categoryRepository,ShopRepository $repository , EntityManagerInterface $entityManager)
     {
         $this->locationRepository = $locationRepository;
         $this->categoryRepository = $categoryRepository;
         $this->shopRepository = $repository;
         $this->entityManager = $entityManager;
-        $this->logger = $logger;
+        $this->shopDataRepository =  $shopDataRepository;
     }
 
     public function createShopFromRequest(ShopDto $shopDto) : ?Shop
@@ -103,9 +105,26 @@ class ShopHandlerService
             $completeData->setLogo($data->getLogo());
             $completeData->setCategory($category->getCategory());
 
-
-
         return $completeData;
+    }
+
+    public function deleteCompleteShopAndData($shopId)
+    {
+        $shop = $this->shopRepository->find($shopId);
+        if(!$shop){
+            return null ;
+        }
+
+        $shopData = $this->shopDataRepository->find($shop->getShopData());
+        if(!$shopData){
+            return null;
+        }
+
+        $this->entityManager->remove($shopData);
+        $this->entityManager->remove($shop);
+        $this->entityManager->flush();
+
+        return \Symfony\Component\HttpFoundation\Response::HTTP_OK;
     }
 
     private function persistShopData(ShopData $shopData)

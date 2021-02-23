@@ -3,6 +3,7 @@
 namespace App\Controller\Api;
 
 
+use App\Entity\Shop;
 use App\Form\Model\ShopDto;
 use App\Form\Type\ShopFormType;
 use App\Repository\ShopRepository;
@@ -34,6 +35,25 @@ class ShopController extends AbstractController
     }
 
     /**
+     * @Rest\Get(path="/shop/{id}")
+     * @Rest\View(serializerGroups={"shop"}, serializerEnableMaxDepthChecks=true)
+     * @param ShopRepository $repository
+     * @param int $id
+     * @return Shop
+     */
+    public function getByIdAction
+    (
+        int $id,
+        ShopRepository $repository
+    ) : Shop
+    {
+        return  $repository->find($id);
+    }
+
+
+
+
+    /**
      * @Rest\Post(path="/shop/add")
      * @Rest\View(serializerGroups={"shop"}, serializerEnableMaxDepthChecks=true)
      * @param Request $request
@@ -62,8 +82,9 @@ class ShopController extends AbstractController
             }
         }
         return $form;
-
     }
+
+
 
 }
 

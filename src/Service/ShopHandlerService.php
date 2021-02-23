@@ -8,6 +8,7 @@ use App\Entity\Location;
 use App\Entity\Shop;
 use App\Entity\ShopCategory;
 use App\Entity\ShopData;
+use App\Form\Model\CompleteShopDataDto;
 use App\Form\Model\ShopDataDto;
 use App\Form\Model\ShopDto;
 use App\Repository\LocationRepository;
@@ -16,6 +17,7 @@ use App\Repository\ShopRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityNotFoundException;
 use Exception;
+use http\Env\Response;
 use Psr\Log\LoggerInterface;
 
 
@@ -74,6 +76,37 @@ class ShopHandlerService
 
     }
 
+
+    public function  recoveryCompleteShopData(int $shopId) : ?CompleteShopDataDto
+    {
+        $completeData = new CompleteShopDataDto();
+
+            $shop = $this->shopRepository->find($shopId);
+            if(!$shop){
+                return null;
+            }
+
+            $location = $shop->getLocation();
+            $data = $shop-> getShopData();
+            $category = $shop->getShopCategory();
+
+            $completeData->setId($shop->getId());
+            $completeData->setName($shop->getName());
+            $completeData->setLatitude($location->getLatitude());
+            $completeData->setLongitude($location->getLongitude());
+            $completeData->setAddress($location->getAddress());
+            $completeData->setIdGoogle($location->getIdGoogle());
+            $completeData->setPhone($data->getPhone());
+            $completeData->setIsWhatsapp($data->getIsWhatsapp());
+            $completeData->setDescription($data->getDescription());
+            $completeData->setPhone($data->getPhone());
+            $completeData->setLogo($data->getLogo());
+            $completeData->setCategory($category->getCategory());
+
+
+
+        return $completeData;
+    }
 
     private function persistShopData(ShopData $shopData)
     {

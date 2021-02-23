@@ -1,0 +1,20 @@
+App\Form\Model\CompleteShopDataDto:
+  attributes:
+    name:
+      groups : ['completeShopData']
+    latitude:
+      groups: [ 'completeShopData' ]
+    longitude:
+      groups: [ 'completeShopData' ]
+    address:
+      groups: [ 'completeShopData' ]
+    id_google:
+      groups: [ 'completeShopData' ]
+    phone:
+      groups: [ 'completeShopData' ]
+    isWhatsapp:
+      groups: [ 'completeShopData' ]
+    description:
+      groups: [ 'completeShopData' ]
+    logo:
+      groups: [ 'completeShopData' ]

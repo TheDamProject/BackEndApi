@@ -12,3 +12,4 @@ App\Entity\Post:
         groups : ['post']
       shopRelated:
         groups : ['post']
+

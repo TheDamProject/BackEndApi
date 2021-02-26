@@ -39,6 +39,9 @@ class CompleteShopDataController extends AbstractController
 
         return $formGenerated;
     }
+
+
+
     /**
      * @Rest\Delete(path="/shop/complete/delete/{id}")
      * @Rest\View(serializerGroups={"completeShopData"}, serializerEnableMaxDepthChecks=true)

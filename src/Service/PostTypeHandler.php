@@ -23,7 +23,6 @@ class PostTypeHandler
 
     public function existsPostType( PostTypeDto $postTypeDto ) : bool
     {
-
         $typeInRepo = $this->postTypeRepository->findBy(['type' => $postTypeDto->getType()]);
         if(!$typeInRepo){
             $result = false;

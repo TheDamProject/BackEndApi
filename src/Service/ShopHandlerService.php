@@ -12,6 +12,7 @@ use App\Repository\LocationRepository;
 use App\Repository\ShopCategoryRepository;
 use App\Repository\ShopDataRepository;
 use App\Repository\ShopRepository;
+use App\Utils\Constants;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityNotFoundException;
 use Exception;
@@ -68,7 +69,7 @@ class ShopHandlerService
 
         $shopData = ShopDataDto::createShopDataFromDto($shopDto->getDataCollection()[0]);
 
-        $fileNameLogo = $this->imageService->saveImage($shopData->getLogo(),'shopLogos' );
+        $fileNameLogo = $this->imageService->saveImage($shopData->getLogo(),Constants::shopLogoDirectory );
         $shopData->setLogo($fileNameLogo);
 
         if($shopData){
@@ -79,9 +80,7 @@ class ShopHandlerService
         }else{
             throw new Exception('NO Data CREATED, Sorry!!');
         }
-
         return $shop;
-
     }
 
 
@@ -114,23 +113,23 @@ class ShopHandlerService
         return $completeData;
     }
 
-    public function deleteCompleteShopAndData($shopId): ?int
+    public function deleteCompleteShopAndData($shopId): Response
     {
         $shop = $this->shopRepository->find($shopId);
         if(!$shop){
-            return null ;
+            return new Response('NO SHOP FOUND abort ' , Response::HTTP_NOT_MODIFIED);
         }
 
         $shopData = $this->shopDataRepository->find($shop->getShopData());
         if(!$shopData){
-            return null;
+            return new Response('NO SHOP DATA FOUND abort ' , Response::HTTP_NOT_MODIFIED);
         }
 
         $this->entityManager->remove($shopData);
         $this->entityManager->remove($shop);
         $this->entityManager->flush();
 
-        return Response::HTTP_OK;
+        return new Response('Deleted Ok ' , Response::HTTP_OK);
     }
 
     private function persistShopData(ShopData $shopData)

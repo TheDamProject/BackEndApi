@@ -7,16 +7,13 @@ use App\Entity\Shop;
 use App\Form\Model\ShopDto;
 use App\Form\Type\ShopFormType;
 use App\Repository\ShopRepository;
-use App\Service\ImageHandlerService;
 use App\Service\ShopHandlerService;
 use Doctrine\ORM\EntityNotFoundException;
+use http\Env\Response;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
-
-
-use Symfony\Component\Console\Output\OutputInterface;
 
 class ShopController extends AbstractController
 {
@@ -80,8 +77,6 @@ class ShopController extends AbstractController
         }
         return $form;
     }
-
-
 
 }
 

@@ -5,6 +5,7 @@ namespace App\Form\Type;
 use App\Entity\Post;
 use App\Form\Model\PostDto;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -14,10 +15,10 @@ class PostFormType extends AbstractType
     {
         $builder
             ->add('title')
+            ->add('type_id' , IntegerType::class)
+            ->add('shopRelated_id', IntegerType::class)
             ->add('content')
             ->add('image')
-            ->add('type')
-            ->add('shopRelated')
         ;
     }
 

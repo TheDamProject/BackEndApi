@@ -6,6 +6,7 @@
     "require": {
         "php": ">=7.4",
         "ext-ctype": "*",
+        "ext-fileinfo": "*",
         "ext-http": "*",
         "ext-iconv": "*",
         "composer/package-versions-deprecated": "1.11.99.1",
@@ -14,6 +15,8 @@
         "doctrine/doctrine-migrations-bundle": "^3.0",
         "doctrine/orm": "^2.8",
         "friendsofsymfony/rest-bundle": "^3.0",
+        "laminas/laminas-zendframework-bridge": "^1.2",
+        "league/flysystem-bundle": "^2.0",
         "nelmio/api-doc-bundle": "^4.2",
         "phpdocumentor/reflection-docblock": "^5.2",
         "sensio/framework-extra-bundle": "^6.1",
@@ -28,16 +31,17 @@
         "symfony/proxy-manager-bridge": "5.2.*",
         "symfony/security-csrf": "5.2.*",
         "symfony/serializer": "5.2.*",
+        "symfony/stopwatch": "^5.2",
+        "symfony/twig-bundle": "^5.2",
+        "symfony/validator": "5.2.*",
+        "symfony/web-profiler-bundle": "^5.2",
         "symfony/yaml": "5.2.*"
     },
     "require-dev": {
         "symfony/debug-bundle": "^5.2",
         "symfony/maker-bundle": "^1.28",
         "symfony/monolog-bundle": "^3.0",
-        "symfony/stopwatch": "^5.2",
-        "symfony/twig-bundle": "^5.2",
-        "symfony/var-dumper": "^5.2",
-        "symfony/web-profiler-bundle": "^5.2"
+        "symfony/var-dumper": "^5.2"
     },
     "config": {
         "optimize-autoloader": true,

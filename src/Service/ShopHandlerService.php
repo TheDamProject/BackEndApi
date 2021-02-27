@@ -3,10 +3,7 @@
 
 namespace App\Service;
 
-
-use App\Entity\Location;
 use App\Entity\Shop;
-use App\Entity\ShopCategory;
 use App\Entity\ShopData;
 use App\Form\Model\CompleteShopDataDto;
 use App\Form\Model\ShopDataDto;
@@ -18,8 +15,8 @@ use App\Repository\ShopRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityNotFoundException;
 use Exception;
-use http\Env\Response;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\HttpFoundation\Response;
 
 
 class ShopHandlerService
@@ -30,15 +27,22 @@ class ShopHandlerService
     private ShopCategoryRepository $categoryRepository;
     private ShopDataRepository  $shopDataRepository;
     private EntityManagerInterface $entityManager;
-    private LoggerInterface $logger;
+    private ImageHandlerService $imageService;
 
-    public function __construct(ShopDataRepository  $shopDataRepository,LocationRepository $locationRepository,ShopCategoryRepository $categoryRepository,ShopRepository $repository , EntityManagerInterface $entityManager)
+    public function __construct
+    (ShopDataRepository $shopDataRepository,
+     LocationRepository $locationRepository,
+     ShopCategoryRepository $categoryRepository,
+     ShopRepository $repository,
+     EntityManagerInterface $entityManager,
+     ImageHandlerService $imageService)
     {
         $this->locationRepository = $locationRepository;
         $this->categoryRepository = $categoryRepository;
         $this->shopRepository = $repository;
         $this->entityManager = $entityManager;
         $this->shopDataRepository =  $shopDataRepository;
+        $this->imageService = $imageService;
     }
 
     public function createShopFromRequest(ShopDto $shopDto) : ?Shop
@@ -51,7 +55,6 @@ class ShopHandlerService
         if(!$location){
             throw new EntityNotFoundException('NO LOCATION FOUND, Sorry!!');
         }else{
-            $this->logger->info($location->getIdGoogle());
             $shop->setLocation($location);
         }
 
@@ -64,6 +67,9 @@ class ShopHandlerService
 
 
         $shopData = ShopDataDto::createShopDataFromDto($shopDto->getDataCollection()[0]);
+
+        $fileNameLogo = $this->imageService->saveImage($shopData->getLogo(),'shopLogos' );
+        $shopData->setLogo($fileNameLogo);
 
         if($shopData){
             $shop->setShopData($shopData);
@@ -108,7 +114,7 @@ class ShopHandlerService
         return $completeData;
     }
 
-    public function deleteCompleteShopAndData($shopId)
+    public function deleteCompleteShopAndData($shopId): ?int
     {
         $shop = $this->shopRepository->find($shopId);
         if(!$shop){
@@ -124,7 +130,7 @@ class ShopHandlerService
         $this->entityManager->remove($shop);
         $this->entityManager->flush();
 
-        return \Symfony\Component\HttpFoundation\Response::HTTP_OK;
+        return Response::HTTP_OK;
     }
 
     private function persistShopData(ShopData $shopData)

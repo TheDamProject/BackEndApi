@@ -7,12 +7,12 @@ use App\Entity\Shop;
 use App\Form\Model\ShopDto;
 use App\Form\Type\ShopFormType;
 use App\Repository\ShopRepository;
+use App\Service\ImageHandlerService;
 use App\Service\ShopHandlerService;
 use Doctrine\ORM\EntityNotFoundException;
-use Monolog\Logger;
-use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use FOS\RestBundle\Controller\Annotations as Rest;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 
@@ -51,20 +51,18 @@ class ShopController extends AbstractController
     }
 
 
-
-
     /**
      * @Rest\Post(path="/shop/add")
      * @Rest\View(serializerGroups={"shop"}, serializerEnableMaxDepthChecks=true)
      * @param Request $request
      * @param ShopHandlerService $handler
+     * @return Shop|FormInterface
      * @throws EntityNotFoundException
      */
     public function postAddAction
     (
         Request $request,
         ShopHandlerService $handler
-
     )
     {
         $shopDto = new ShopDto();
@@ -77,7 +75,6 @@ class ShopController extends AbstractController
             $shopCreated = $handler->createShopFromRequest($shopDto);
 
             if($shopCreated){
-
                 return $shopCreated;
             }
         }

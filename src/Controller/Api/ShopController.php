@@ -48,36 +48,6 @@ class ShopController extends AbstractController
     }
 
 
-    /**
-     * @Rest\Post(path="/shop/add")
-     * @Rest\View(serializerGroups={"shop"}, serializerEnableMaxDepthChecks=true)
-     * @param Request $request
-     * @param ShopHandlerService $handler
-     * @return Shop|FormInterface
-     * @throws EntityNotFoundException
-     */
-    public function postAddAction
-    (
-        Request $request,
-        ShopHandlerService $handler
-    )
-    {
-        $shopDto = new ShopDto();
-
-        $form = $this->createForm(ShopFormType::class, $shopDto);
-        $form->handleRequest($request);
-
-
-        if ($form->isSubmitted() && $form->isValid()){
-            $shopCreated = $handler->createShopFromRequest($shopDto);
-
-            if($shopCreated){
-                return $shopCreated;
-            }
-        }
-        return $form;
-    }
-
 }
 
 

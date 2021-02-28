@@ -6,6 +6,7 @@ namespace App\Form\Model;
 
 class CompleteShopDataDto
 {
+    private ?int $id ;
     private ?string $name = "defaultName";
     private ?float $latitude = 0000.000;
     private ?float $longitude = 0000.111;
@@ -16,7 +17,7 @@ class CompleteShopDataDto
     private ?string $description = "defaultDescription";
     private ?string $logo = "defaultLogo";
     private ?string $category = "default category";
-    private ?int $id ;
+
 
     /**
      * CompleteShopDataDto constructor.
@@ -31,6 +32,7 @@ class CompleteShopDataDto
      * @param string|null $logo
      * @param string|null $category
      */
+
 
 
     /**

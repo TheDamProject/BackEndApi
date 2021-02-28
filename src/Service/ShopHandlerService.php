@@ -3,7 +3,9 @@
 
 namespace App\Service;
 
+use App\Entity\Location;
 use App\Entity\Shop;
+use App\Entity\ShopCategory;
 use App\Entity\ShopData;
 use App\Form\Model\CompleteShopDataDto;
 use App\Form\Model\ShopDataDto;
@@ -16,7 +18,9 @@ use App\Utils\Constants;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityNotFoundException;
 use Exception;
+use Petstore30\Category;
 use Psr\Log\LoggerInterface;
+use stdClass;
 use Symfony\Component\HttpFoundation\Response;
 
 
@@ -46,43 +50,56 @@ class ShopHandlerService
         $this->imageService = $imageService;
     }
 
-    public function createShopFromRequest(ShopDto $shopDto) : ?Shop
+    public function createShopAndDataFromRequest(CompleteShopDataDto $completeShopDataDto)
     {
-        $shop = New Shop();
-
-        $shop->setName($shopDto->getName());
-
-        $location =  $this->locationRepository->find($shopDto->getLocationId());
-        if(!$location){
-            throw new EntityNotFoundException('NO LOCATION FOUND, Sorry!!');
-        }else{
-            $shop->setLocation($location);
-        }
-
-        $shopCategory = $this->categoryRepository->find($shopDto->getShopCategoryId());
-        if(!$shopCategory){
-            throw new EntityNotFoundException('NO CATEGORY FOUND, Sorry!!');
-        }else{
-            $shop->setShopCategory($shopCategory);
-        }
 
 
-        $shopData = ShopDataDto::createShopDataFromDto($shopDto->getDataCollection()[0]);
-
-        $fileNameLogo = $this->imageService->saveImage($shopData->getLogo(),Constants::shopLogoDirectory );
-        $shopData->setLogo($fileNameLogo);
-
-        if($shopData){
-            $shop->setShopData($shopData);
-
-            $this->persistShopData($shopData);
-            $this->persistShop($shop);
-        }else{
-            throw new Exception('NO Data CREATED, Sorry!!');
-        }
-        return $shop;
     }
 
+    private function createCategoryIfNotExists(CompleteSHopDataDto $completeShopDataDto) : ShopCategory
+    {
+        $categoryRepo = $this->shopRepository->findBy(['shop_category_id' => $completeShopDataDto->getCategory()]);
+        if(!$categoryRepo){
+            $categoryRepo = new ShopCategory();
+            $categoryRepo->setCategory($completeShopDataDto->getCategory());
+            $this->persist($categoryRepo);
+        }
+
+        return  $categoryRepo;
+    }
+
+    private function createLocationIfNotExists(CompleteShopDataDto $completeShopDataDto): Location
+    {
+        $locationRepo = $this->locationRepository->findBy(['address' => $completeShopDataDto->getAddress()]);
+        if(!$locationRepo) {
+            $locationRepo = new Location();
+            $locationRepo->setIdGoogle($completeShopDataDto->getIdGoogle());
+            $locationRepo->setAddress($completeShopDataDto->getAddress());
+            $locationRepo->setLongitude($completeShopDataDto->getLongitude());
+            $locationRepo->setLatitude($completeShopDataDto->getLatitude());
+            $this->persist($locationRepo);
+
+        }
+        return $locationRepo;
+
+    }
+
+    private function createShopDataIfNotExists(CompleteShopDataDto $completeShopDataDto)
+    {
+        $shopData = $this->shopDataRepository->findBy(['phone' => $completeShopDataDto->getPhone() , 'logo']);
+
+    }
+
+
+    private function createShopIfNotExists(CompleteShopDataDto $completeShopDataDto)
+    {
+        $shopRepo = $this->shopRepository->findBy(['name' => $completeShopDataDto->getName()]);
+        if(!$shopRepo){
+            $shopRepo = new Shop();
+            $shopRepo->setName($completeShopDataDto->getName());
+
+        }
+    }
 
     public function  recoveryCompleteShopData(int $shopId) : ?CompleteShopDataDto
     {
@@ -125,6 +142,7 @@ class ShopHandlerService
             return new Response('NO SHOP DATA FOUND abort ' , Response::HTTP_NOT_MODIFIED);
         }
 
+        $this->imageService->deleteImage($shopData->getLogo());
         $this->entityManager->remove($shopData);
         $this->entityManager->remove($shop);
         $this->entityManager->flush();
@@ -132,16 +150,11 @@ class ShopHandlerService
         return new Response('Deleted Ok ' , Response::HTTP_OK);
     }
 
-    private function persistShopData(ShopData $shopData)
+    private function persist($object)
     {
-       $this->entityManager->persist($shopData);
-       $this->entityManager->flush();
-    }
-
-    private function persistShop(Shop $shop)
-    {
-        $this->entityManager->persist($shop);
+        $this->entityManager->persist($object);
         $this->entityManager->flush();
     }
+
 
 }

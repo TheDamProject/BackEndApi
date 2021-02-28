@@ -3,13 +3,8 @@
 
 namespace App\Service;
 
-
 use League\Flysystem\FilesystemException;
 use League\Flysystem\FilesystemOperator;
-use Monolog\Logger;
-use Psr\Log\LoggerInterface;
-use stdClass;
-
 
 class ImageHandlerService
 {
@@ -33,12 +28,22 @@ class ImageHandlerService
 
 
         $data = explode(',' , $imageBase64);
-        $fileName = sprintf('/'.$classPath.'%s.%s', uniqid($classPath.'_', true),$extension);
+        $fileName = sprintf('/'.$classPath.'/'.'%s.%s', uniqid($classPath.'_', true),$extension);
         try {
             $this->defaultStorage->write($fileName, base64_decode($data[1]));
         } catch (FilesystemException $e) {
         }
         return $fileName;
+    }
+
+    public function deleteImage(String $fileName): bool
+    {
+        try {
+            $this->defaultStorage->delete($fileName);
+        } catch (FilesystemException $e) {
+            return false;
+        }
+        return true;
     }
 
 }

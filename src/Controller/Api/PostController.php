@@ -7,6 +7,7 @@ use App\Form\Model\PostDto;;
 use App\Form\Type\PostFormType;
 use App\Repository\PostRepository;
 use App\Service\PostHandlerService;
+use Doctrine\DBAL\Exception;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityNotFoundException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -49,7 +50,7 @@ class PostController extends AbstractController
     {
         $post = $repository->find($id);
         if(!$post){
-            throw new EntityNotFoundException('The location with id '.$id.' does not exist!');
+            throw new EntityNotFoundException('The post with id '.$id.' does not exist!');
         }
         return $post;
     }
@@ -86,7 +87,34 @@ class PostController extends AbstractController
         return new Response('Post Created Ok ',  Response::HTTP_CREATED);
     }
 
+    /**
+     * @Rest\Delete(path="/post/delete/{id}")
+     * @Rest\View(serializerGroups={"post"}, serializerEnableMaxDepthChecks=true)
+     * @param int $id
+     * @param PostHandlerService $handlerService
+     * @param PostRepository $repository
+     * @return Response
+     * @throws EntityNotFoundException
+     */
+    public function deleteByIdAction
+    (
+        int $id,
+        PostHandlerService $handlerService,
+        PostRepository $repository
+    )
+    {
+        $post = $repository->find($id);
+        if(!$post){
+            throw new EntityNotFoundException('The Post with id '.$id.' does not exist!');
+        }
 
+        try {
+            $handlerService->deletePost($post);
+        } catch (Exception $e) {
+           return new Response( $e , Response::HTTP_NOT_MODIFIED);
+        }
+        return new Response('Post deleted Ok' , Response::HTTP_OK);
+    }
 
 
 }

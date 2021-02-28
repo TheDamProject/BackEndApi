@@ -8,6 +8,7 @@ use App\Form\Model\PostDto;
 use App\Repository\PostTypeRepository;
 use App\Repository\ShopRepository;
 use App\Utils\Constants;
+use Doctrine\DBAL\Exception as DoctrineException;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 
@@ -26,19 +27,14 @@ class PostHandlerService
      * @param ShopRepository $shopRepository
      * @param ImageHandlerService $imageService
      */
-    public function __construct
-    (
-        EntityManagerInterface $entityManager,
-        PostTypeRepository $typeRepository,
-        ShopRepository $shopRepository,
-        ImageHandlerService $imageService
-    )
+    public function __construct(EntityManagerInterface $entityManager, PostTypeRepository $typeRepository, ShopRepository $shopRepository, ImageHandlerService $imageService)
     {
         $this->entityManager = $entityManager;
         $this->typeRepository = $typeRepository;
         $this->shopRepository = $shopRepository;
         $this->imageService = $imageService;
     }
+
 
     public function persistPost(Post $post): bool
     {
@@ -62,6 +58,18 @@ class PostHandlerService
         if(!$type || !$shop) throw new Exception('DATA NOT FOUND');
 
         return PostDto::createEntityFromRequest($postDto , $type , $shop);
+    }
+
+    public function deletePost(Post $post): Post
+    {
+        try{
+            $this->imageService->deleteImage($post->getImage());
+            $this->entityManager->remove($post);
+            $this->entityManager->flush();
+        }catch (DoctrineException $exception){
+            throw new DoctrineException("Error try to remove Post");
+        }
+        return $post;
     }
 
 

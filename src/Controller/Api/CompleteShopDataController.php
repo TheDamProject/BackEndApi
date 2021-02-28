@@ -2,10 +2,15 @@
 
 namespace App\Controller\Api;
 
+use App\Entity\Shop;
+use App\Form\Model\CompleteShopDataDto;
+use App\Form\Model\ShopDto;
 use App\Form\Type\CompleteShopDataType;
+use App\Form\Type\ShopFormType;
 use App\Service\ShopHandlerService;
 use Doctrine\ORM\EntityNotFoundException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\Forms;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -19,6 +24,7 @@ class CompleteShopDataController extends AbstractController
      * @param int $id
      * @param Request $request
      * @param ShopHandlerService $shopHandlerService
+     * @return CompleteShopDataDto
      * @throws EntityNotFoundException
      */
     public function getCompleteDataAboutShopAction
@@ -27,7 +33,7 @@ class CompleteShopDataController extends AbstractController
         Request $request,
         ShopHandlerService $shopHandlerService
 
-    )
+    ): CompleteShopDataDto
     {
         $formFactory = Forms::createFormFactory();
 
@@ -40,6 +46,35 @@ class CompleteShopDataController extends AbstractController
         return $formGenerated;
     }
 
+    /**
+     * @Rest\Post(path="/shop/complete/add")
+     * @Rest\View(serializerGroups={"completeShopData"}, serializerEnableMaxDepthChecks=true)
+     * @param Request $request
+     * @param ShopHandlerService $handler
+     * @return CompleteShopDataDto|FormInterface
+     * @throws EntityNotFoundException
+     */
+    public function postAddAction
+    (
+        Request $request,
+        ShopHandlerService $handler
+    )
+    {
+        $completeShopData = new CompleteShopDataDto();
+
+        $form = $this->createForm(ShopFormType::class, $completeShopData);
+        $form->handleRequest($request);
+
+
+        if ($form->isSubmitted() && $form->isValid()){
+            $shopCreated = $handler->createShopAndDataFromRequest($completeShopData);
+
+            if($shopCreated){
+                return $shopCreated;
+            }
+        }
+        return $form;
+    }
     /**
      * @Rest\Delete(path="/shop/complete/delete/{id}")
      * @Rest\View(serializerGroups={"completeShopData"}, serializerEnableMaxDepthChecks=true)

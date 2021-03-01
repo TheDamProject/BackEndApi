@@ -6,10 +6,10 @@ namespace App\Form\Model;
 
 class ShopCreationInformerModel
 {
-    private int $location_created;
-    private int $shopData_created;
-    private int $category_created;
-    private int $shop_created;
+    private ?int $location_created = 0;
+    private ?int $shopData_created = 0 ;
+    private ?int $category_created = 0 ;
+    private ?int $shop_created = 0 ;
 
     /**
      * @return int

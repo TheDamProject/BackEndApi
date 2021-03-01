@@ -10,11 +10,16 @@ use App\Form\Type\ShopInformerModelFormType;
 use App\Service\ShopHandlerService;
 use Doctrine\Common\Collections\ArrayCollection;
 use Exception;
+use Monolog\Logger;
+use Psr\Log\LoggerInterface;
+use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Serializer\SerializerInterface;
 
 class ShopController extends AbstractController
 {
@@ -63,20 +68,24 @@ class ShopController extends AbstractController
      * @Rest\Post(path="/shop/add")
      * @Rest\View(serializerGroups={"shop"}, serializerEnableMaxDepthChecks=true)
      * @param Request $request
-     * @return ShopCreationInformerModel|FormInterface
+     * @param LoggerInterface $log
      */
-    public function addNewShopAction(Request $request )
+    public function addNewShopAction(Request $request, LoggerInterface $log, SerializerInterface $serializer)
     {
         $shopDto = new ShopDto();
         $form = $this->createForm(ShopFormType::class, $shopDto);
         $form->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid()){
+            $data = $this->handler->createNewShop($shopDto);
 
-            $informer = new ShopCreationInformerModel();
-            $form2 = $this->createForm(ShopInformerModelFormType::class, $informer);
-            $form2->submit($this->handler->createNewShop($shopDto));
-            return $form2;
+            return [
+                'location' => $data->getLocationCreated(),
+                'ShopData' => $data->getShopDataCreated(),
+                'Category' => $data->getCategoryCreated(),
+                'shop' => $data->getShopCreated()
+
+            ];
         }
         return $form;
     }

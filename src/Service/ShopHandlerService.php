@@ -103,8 +103,7 @@ class ShopHandlerService
              $result->setLocationCreated($this->persist($location)) ;
             }else{
                 $location = $locationFound;
-
-
+                $result->setLocationCreated(Response::HTTP_NOT_MODIFIED);
             }
             $shop->setLocation($location);
         }else{

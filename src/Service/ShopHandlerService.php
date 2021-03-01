@@ -3,24 +3,20 @@
 
 namespace App\Service;
 
-use App\Entity\Location;
 use App\Entity\Shop;
 use App\Entity\ShopCategory;
-use App\Entity\ShopData;
-use App\Form\Model\CompleteShopDataDto;
+use App\Form\Model\LocationDto;
+use App\Form\Model\ShopCreationInformerModel;
 use App\Form\Model\ShopDataDto;
 use App\Form\Model\ShopDto;
 use App\Repository\LocationRepository;
 use App\Repository\ShopCategoryRepository;
 use App\Repository\ShopDataRepository;
 use App\Repository\ShopRepository;
-use App\Utils\Constants;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\EntityNotFoundException;
 use Exception;
-use Petstore30\Category;
 use Psr\Log\LoggerInterface;
-use stdClass;
 use Symfony\Component\HttpFoundation\Response;
 
 
@@ -33,128 +29,206 @@ class ShopHandlerService
     private ShopDataRepository  $shopDataRepository;
     private EntityManagerInterface $entityManager;
     private ImageHandlerService $imageService;
+    private LoggerInterface $log;
 
-    public function __construct
-    (ShopDataRepository $shopDataRepository,
-     LocationRepository $locationRepository,
-     ShopCategoryRepository $categoryRepository,
-     ShopRepository $repository,
-     EntityManagerInterface $entityManager,
-     ImageHandlerService $imageService)
+    /**
+     * ShopHandlerService constructor.
+     * @param ShopRepository $shopRepository
+     * @param LocationRepository $locationRepository
+     * @param ShopCategoryRepository $categoryRepository
+     * @param ShopDataRepository $shopDataRepository
+     * @param EntityManagerInterface $entityManager
+     * @param ImageHandlerService $imageService
+     * @param LoggerInterface $log
+     */
+    public function __construct(ShopRepository $shopRepository,
+                                LocationRepository $locationRepository,
+                                ShopCategoryRepository $categoryRepository,
+                                ShopDataRepository $shopDataRepository,
+                                EntityManagerInterface $entityManager,
+                                ImageHandlerService $imageService,
+                                LoggerInterface $log)
     {
+        $this->shopRepository = $shopRepository;
         $this->locationRepository = $locationRepository;
         $this->categoryRepository = $categoryRepository;
-        $this->shopRepository = $repository;
+        $this->shopDataRepository = $shopDataRepository;
         $this->entityManager = $entityManager;
-        $this->shopDataRepository =  $shopDataRepository;
         $this->imageService = $imageService;
+        $this->log = $log;
     }
 
-    public function createShopAndDataFromRequest(CompleteShopDataDto $completeShopDataDto)
+
+    public function getAllShops() : ArrayCollection
     {
+        $shopsListDto = new ArrayCollection();
+        $shopsInRepository = $this->shopRepository->findAll();
 
-
-    }
-
-    private function createCategoryIfNotExists(CompleteSHopDataDto $completeShopDataDto) : ShopCategory
-    {
-        $categoryRepo = $this->shopRepository->findBy(['shop_category_id' => $completeShopDataDto->getCategory()]);
-        if(!$categoryRepo){
-            $categoryRepo = new ShopCategory();
-            $categoryRepo->setCategory($completeShopDataDto->getCategory());
-            $this->persist($categoryRepo);
+        foreach ($shopsInRepository as $shop){
+            $shopDto = ShopDto::createDtoFromEntity($shop);
+            $shopsListDto->add($shopDto);
         }
 
-        return  $categoryRepo;
+        return $shopsListDto;
+
     }
 
-    private function createLocationIfNotExists(CompleteShopDataDto $completeShopDataDto): Location
-    {
-        $locationRepo = $this->locationRepository->findBy(['address' => $completeShopDataDto->getAddress()]);
-        if(!$locationRepo) {
-            $locationRepo = new Location();
-            $locationRepo->setIdGoogle($completeShopDataDto->getIdGoogle());
-            $locationRepo->setAddress($completeShopDataDto->getAddress());
-            $locationRepo->setLongitude($completeShopDataDto->getLongitude());
-            $locationRepo->setLatitude($completeShopDataDto->getLatitude());
-            $this->persist($locationRepo);
 
+    public function getOneShopById(int $id) : ShopDto
+    {
+        $shopDto =   ShopDto::createDtoFromEntity($this->shopRepository->find($id));
+
+        if(!$shopDto){
+            throw new Exception('NO SHOP FOUND');
         }
-        return $locationRepo;
-
-    }
-
-    private function createShopDataIfNotExists(CompleteShopDataDto $completeShopDataDto)
-    {
-        $shopData = $this->shopDataRepository->findBy(['phone' => $completeShopDataDto->getPhone() , 'logo']);
-
+        return $shopDto;
     }
 
 
-    private function createShopIfNotExists(CompleteShopDataDto $completeShopDataDto)
+    public function createNewShop(ShopDto $shopDto) : ShopCreationInformerModel
     {
-        $shopRepo = $this->shopRepository->findBy(['name' => $completeShopDataDto->getName()]);
-        if(!$shopRepo){
-            $shopRepo = new Shop();
-            $shopRepo->setName($completeShopDataDto->getName());
+        $result = new ShopCreationInformerModel();
 
-        }
-    }
+        $shop = new Shop();
+        $shop->setName($shopDto->getName());
 
-    public function  recoveryCompleteShopData(int $shopId) : ?CompleteShopDataDto
-    {
-        $completeData = new CompleteShopDataDto();
 
-            $shop = $this->shopRepository->find($shopId);
-            if(!$shop){
-                return null;
+        if($shopDto->getLocationId() == null ){
+            $locationFound = $this->locationRepository->findOneBy(
+                [   'latitude' => $shopDto->getLatitude(),
+                    'longitude' => $shopDto->getLongitude()]);
+
+            if(!$locationFound){
+              $location = LocationDto::createEntityFromShopDtoRequest($shopDto);
+             $result->setLocationCreated($this->persist($location)) ;
+            }else{
+                $location = $locationFound;
+
+
             }
-
-            $location = $shop->getLocation();
-            $data = $shop-> getShopData();
-            $category = $shop->getShopCategory();
-
-            $completeData->setId($shop->getId());
-            $completeData->setName($shop->getName());
-            $completeData->setLatitude($location->getLatitude());
-            $completeData->setLongitude($location->getLongitude());
-            $completeData->setAddress($location->getAddress());
-            $completeData->setIdGoogle($location->getIdGoogle());
-            $completeData->setPhone($data->getPhone());
-            $completeData->setIsWhatsapp($data->getIsWhatsapp());
-            $completeData->setDescription($data->getDescription());
-            $completeData->setPhone($data->getPhone());
-            $completeData->setLogo($data->getLogo());
-            $completeData->setCategory($category->getCategory());
-
-        return $completeData;
-    }
-
-    public function deleteCompleteShopAndData($shopId): Response
-    {
-        $shop = $this->shopRepository->find($shopId);
-        if(!$shop){
-            return new Response('NO SHOP FOUND abort ' , Response::HTTP_NOT_MODIFIED);
+            $shop->setLocation($location);
+        }else{
+            $shop->setLocation($this->locationRepository->find($shopDto->getLocationId()));
+            $result->setLocationCreated(Response::HTTP_NOT_MODIFIED);
         }
 
-        $shopData = $this->shopDataRepository->find($shop->getShopData());
-        if(!$shopData){
-            return new Response('NO SHOP DATA FOUND abort ' , Response::HTTP_NOT_MODIFIED);
+
+        if($shopDto->getCategoryId() == null) {
+            $shopCategoryFound = $this->categoryRepository->findOneBy(
+                ['category' => $shopDto->getCategory()] );
+
+            $category = new ShopCategory();
+
+            if(!$shopCategoryFound){
+                $category->setCategory($shopDto->getCategory());
+                $result->setCategoryCreated($this->persist($category));
+            }else{
+                $category = $shopCategoryFound;
+                $result->setCategoryCreated(Response::HTTP_NOT_MODIFIED);
+
+            }
+            $shop->setShopCategory($category);
+        }else {
+            $shop->setShopCategory($this->categoryRepository->find($shopDto->getCategoryId()));
+            $result->setCategoryCreated(Response::HTTP_NOT_MODIFIED);
         }
 
-        $this->imageService->deleteImage($shopData->getLogo());
-        $this->entityManager->remove($shopData);
-        $this->entityManager->remove($shop);
-        $this->entityManager->flush();
 
-        return new Response('Deleted Ok ' , Response::HTTP_OK);
+        if($shopDto->getShopDataId() == null ){
+            $shopDataFound =  $this->shopDataRepository->findOneBy(
+                [   'phone' => $shopDto->getPhone(),
+                    'description' => $shopDto->getDescription(),
+                    'logo' => $shopDto->getLogo()]);
+            if(!$shopDataFound){
+                $shopData = ShopDataDto::createShopDataFromShopDtoRequest($shopDto, $shop);
+                $result->setShopDataCreated($this->persist($shopData));
+            }else{
+                $shopData = $shopDataFound;
+                $result->setShopDataCreated(Response::HTTP_NOT_MODIFIED);
+            }
+            $shop->setShopData($shopData);
+        }else{
+            $shop->setShopData($this->shopDataRepository->find($shopDto->getShopDataId()));
+            $result->setShopDataCreated(Response::HTTP_NOT_MODIFIED);
+        }
+
+        $shopFound = $this->shopRepository->findOneBy(['name' =>$shop->getName() , 'location' => $shop->getLocation()]);
+        if(!$shopFound)
+        {
+            $result->setShopCreated($this->persist($shop));
+
+        }else{
+            $result->setShopCreated(Response::HTTP_NOT_MODIFIED);
+        }
+
+        return $result;
+
+
     }
 
-    private function persist($object)
+    public function deleteOneShopById(int $id): bool
     {
-        $this->entityManager->persist($object);
-        $this->entityManager->flush();
+        $shop = $this->shopRepository->find($id);
+
+        if($this->removeOneBiId($shop->getShopData())){
+            if($this->removeOneBiId($shop)){
+                $this->flushChanges();
+                return true;
+            }
+        }
+        return false;
     }
 
+    private function persist($entity):int
+    {
+        try {
+            $this->entityManager->persist($entity);
+            $this->flushChanges();
+            return Response::HTTP_OK;
+        }catch (Exception $ex){
+            return Response::HTTP_NOT_MODIFIED;
+        }
 
+    }
+
+    private function removeOneBiId($entity): bool
+    {
+        try {
+            $this->entityManager->remove($entity);
+            return true;
+        }catch (Exception $ex){
+            return false;
+        }
+    }
+
+    private function flushChanges(){
+        $this->entityManager->flush();
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

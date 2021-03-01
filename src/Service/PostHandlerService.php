@@ -4,7 +4,7 @@
 namespace App\Service;
 
 use App\Entity\Post;
-use App\Form\Model\PostDto;
+use App\Form\Type\Model\PostDto;
 use App\Repository\PostTypeRepository;
 use App\Repository\ShopRepository;
 use App\Utils\Constants;

@@ -2,7 +2,7 @@
 
 namespace App\Serializer;
 
-use App\Form\Model\CompleteShopDataDto;
+use App\Form\Type\Model\CompleteShopDataDto;
 use App\Utils\Constants;
 use ArrayObject;
 use Symfony\Component\HttpFoundation\UrlHelper;

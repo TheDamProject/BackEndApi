@@ -3,48 +3,101 @@
 namespace App\Controller\Api;
 
 
-use App\Entity\Shop;
+use App\Form\Model\ShopCreationInformerModel;
 use App\Form\Model\ShopDto;
 use App\Form\Type\ShopFormType;
-use App\Repository\ShopRepository;
+use App\Form\Type\ShopInformerModelFormType;
 use App\Service\ShopHandlerService;
-use Doctrine\ORM\EntityNotFoundException;
-use http\Env\Response;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use FOS\RestBundle\Controller\Annotations as Rest;
+use Doctrine\Common\Collections\ArrayCollection;
+use Exception;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use FOS\RestBundle\Controller\Annotations as Rest;
+use Symfony\Component\HttpFoundation\Response;
 
 class ShopController extends AbstractController
 {
+     private ShopHandlerService $handler;
+
+
+    /**
+     * ShopController constructor.
+     * @param ShopHandlerService $handler
+     */
+    public function __construct(ShopHandlerService $handler)
+    {
+        $this->handler = $handler;
+    }
+
     /**
      * @Rest\Get(path="/shops")
      * @Rest\View(serializerGroups={"shop"}, serializerEnableMaxDepthChecks=true)
-     * @param ShopRepository $repository
-     * @return array
      */
-    public function getAllAction
-    (
-        ShopRepository $repository
-    ): array
+    public function getAllAction(): ArrayCollection
     {
-        return  $repository->findAll();
+        return $this->handler->getAllShops();
     }
+
+
 
     /**
      * @Rest\Get(path="/shop/{id}")
      * @Rest\View(serializerGroups={"shop"}, serializerEnableMaxDepthChecks=true)
-     * @param ShopRepository $repository
      * @param int $id
-     * @return Shop
+     * @return ShopDto|int
      */
     public function getByIdAction
     (
-        int $id,
-        ShopRepository $repository
-    ) : Shop
+        int $id
+    )
     {
-        return  $repository->find($id);
+        try {
+            return $this->handler->getOneShopById($id);
+        } catch (Exception $e) {
+            return Response::HTTP_NOT_FOUND;
+        }
+    }
+
+    /**
+     * @Rest\Post(path="/shop/add")
+     * @Rest\View(serializerGroups={"shop"}, serializerEnableMaxDepthChecks=true)
+     * @param Request $request
+     * @return ShopCreationInformerModel|FormInterface
+     */
+    public function addNewShopAction(Request $request )
+    {
+        $shopDto = new ShopDto();
+        $form = $this->createForm(ShopFormType::class, $shopDto);
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid()){
+
+            $informer = new ShopCreationInformerModel();
+            $form2 = $this->createForm(ShopInformerModelFormType::class, $informer);
+            $form2->submit($this->handler->createNewShop($shopDto));
+            return $form2;
+        }
+        return $form;
+    }
+
+    /**
+     * @Rest\Delete(path="/shop/delete/{id}")
+     * @Rest\View(serializerGroups={"shop"}, serializerEnableMaxDepthChecks=true)
+     * @param int $id
+     * @return ShopDto|int
+     */
+    public function deleteByIdAction
+    (
+        int $id
+    )
+    {
+        if($this->handler->deleteOneShopById($id)){
+            return Response::HTTP_OK;
+        }else{
+            return Response::HTTP_NOT_MODIFIED;
+        }
+
     }
 
 

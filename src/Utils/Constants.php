@@ -10,4 +10,5 @@ class Constants
     const shopLogoDirectory = 'shopLogos';
     const postImageDirectory = 'postImage';
     const postImagePre = 'Image';
+
 }

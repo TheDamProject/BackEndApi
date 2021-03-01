@@ -2,7 +2,7 @@
 
 namespace App\Form\Type;
 
-use App\Form\Model\LocationDto;
+use App\Form\Type\Model\LocationDto;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;

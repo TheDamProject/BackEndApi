@@ -7,7 +7,6 @@ namespace App\Form\Model;
 use App\Entity\Post;
 use App\Entity\PostType;
 use App\Entity\Shop;
-use Doctrine\Common\Collections\ArrayCollection;
 
 
 class PostDto

@@ -3,12 +3,11 @@
 namespace App\Controller\Api;
 
 use App\Entity\Post;
-use App\Form\Model\PostDto;;
-use App\Form\Type\PostFormType;
+use App\Form\Type\Model\PostDto;;
+use App\Form\Type\Type\PostFormType;
 use App\Repository\PostRepository;
 use App\Service\PostHandlerService;
 use Doctrine\DBAL\Exception;
-use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityNotFoundException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;

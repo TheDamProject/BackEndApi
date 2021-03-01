@@ -5,7 +5,7 @@ namespace App\Serializer;
 
 
 use App\Entity\Post;
-use App\Form\Model\PostDto;
+use App\Form\Type\Model\PostDto;
 use App\Utils\Constants;
 use Symfony\Component\HttpFoundation\UrlHelper;
 use Symfony\Component\Serializer\Normalizer\ContextAwareNormalizerInterface;

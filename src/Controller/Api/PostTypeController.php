@@ -4,8 +4,8 @@ namespace App\Controller\Api;
 
 
 use App\Entity\PostType;
-use App\Form\Model\PostTypeDto;
-use App\Form\Type\TypeFormType;
+use App\Form\Type\Model\PostTypeDto;
+use App\Form\Type\Type\TypeFormType;
 use App\Repository\PostTypeRepository;
 use App\Service\PostTypeHandler;
 use Doctrine\ORM\EntityNotFoundException;

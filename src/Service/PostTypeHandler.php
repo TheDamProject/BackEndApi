@@ -5,7 +5,7 @@ namespace App\Service;
 
 
 use App\Entity\PostType;
-use App\Form\Type\Model\PostTypeDto;
+use App\Form\Model\PostTypeDto;
 use App\Repository\PostTypeRepository;
 use Doctrine\ORM\EntityManagerInterface;
 

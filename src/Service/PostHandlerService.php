@@ -4,13 +4,14 @@
 namespace App\Service;
 
 use App\Entity\Post;
-use App\Form\Type\Model\PostDto;
+use App\Form\Model\PostDto;
 use App\Repository\PostTypeRepository;
 use App\Repository\ShopRepository;
 use App\Utils\Constants;
 use Doctrine\DBAL\Exception as DoctrineException;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
+use Symfony\Component\HttpFoundation\UrlHelper;
 
 class PostHandlerService
 
@@ -19,6 +20,7 @@ class PostHandlerService
       private PostTypeRepository $typeRepository;
       private ShopRepository  $shopRepository;
       private ImageHandlerService $imageService;
+      private UrlHelper $urlHelper;
 
     /**
      * PostHandlerService constructor.
@@ -26,13 +28,15 @@ class PostHandlerService
      * @param PostTypeRepository $typeRepository
      * @param ShopRepository $shopRepository
      * @param ImageHandlerService $imageService
+     * @param UrlHelper $urlhelper
      */
-    public function __construct(EntityManagerInterface $entityManager, PostTypeRepository $typeRepository, ShopRepository $shopRepository, ImageHandlerService $imageService)
+    public function __construct(EntityManagerInterface $entityManager, PostTypeRepository $typeRepository, ShopRepository $shopRepository, ImageHandlerService $imageService, UrlHelper $urlhelper)
     {
         $this->entityManager = $entityManager;
         $this->typeRepository = $typeRepository;
         $this->shopRepository = $shopRepository;
         $this->imageService = $imageService;
+        $this->urlHelper = $urlhelper;
     }
 
 
@@ -42,7 +46,7 @@ class PostHandlerService
             $this->entityManager->persist($post);
             $this->entityManager->flush();
             return true;
-        }catch (\Exception  $ex){
+        }catch (Exception  $ex){
             return false;
     }
 
@@ -53,8 +57,7 @@ class PostHandlerService
         $type = $this->typeRepository->find($postDto->getTypeId());
         $shop = $this->shopRepository->find($postDto->getShopRelatedId());
         $fileNameImage = $this->imageService->saveImage($postDto->getImage(),Constants::postImageDirectory );
-        $postDto->setImage($fileNameImage);
-
+        $postDto->setImage($this->urlHelper->getAbsoluteUrl(Constants::postImageDirectory. $fileNameImage));
         if(!$type || !$shop) throw new Exception('DATA NOT FOUND');
 
         return PostDto::createEntityFromRequest($postDto , $type , $shop);
@@ -66,7 +69,7 @@ class PostHandlerService
             $this->imageService->deleteImage($post->getImage());
             $this->entityManager->remove($post);
             $this->entityManager->flush();
-        }catch (DoctrineException $exception){
+        }catch (Exception $exception){
             throw new DoctrineException("Error try to remove Post");
         }
         return $post;

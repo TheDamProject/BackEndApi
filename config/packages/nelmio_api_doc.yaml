@@ -1,10 +1,15 @@
 nelmio_api_doc:
     documentation:
         info:
-            title: ShopsBackend
-            description: Backend for ShopsApp
-            version: 1.0.0
+            title: GoLocal
+            description: Backend for GoLocal application
+            version: 0.90.2
 
     areas: # to filter documented areas
-        path_patterns:
-            - ^/api(?!/doc$) # Accepts routes under /api except /api/doc
+        default:
+            path_patterns: [ ^/api ]
+        location:
+            path_patterns: [ ^/api ]
+    models:
+        names:
+            - { alias: LocationController,        type: App\Entity\Location }

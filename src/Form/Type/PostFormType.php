@@ -25,6 +25,7 @@ class PostFormType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => PostDto::class,
+            'csrf_protection' => false,
         ]);
     }
 

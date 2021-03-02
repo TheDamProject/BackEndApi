@@ -3,8 +3,8 @@
 namespace App\Controller\Api;
 
 use App\Entity\Location;
-use App\Form\Type\Model\LocationDto;
-use App\Form\Type\Type\LocationFormType;
+use App\Form\Model\LocationDto;
+use App\Form\Type\LocationFormType;
 use App\Repository\LocationRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityNotFoundException;
@@ -24,6 +24,7 @@ class LocationController extends AbstractController
     public function getAllAction
     (
         LocationRepository $repository
+
     ): array
     {
         return  $repository->findAll();
@@ -34,6 +35,7 @@ class LocationController extends AbstractController
      * @Rest\View(serializerGroups={"location"}, serializerEnableMaxDepthChecks=true)
      * @param int $id
      * @param LocationRepository $repository
+     * @return Location
      * @throws EntityNotFoundException
      */
     public function getByIdAction

@@ -2,7 +2,7 @@
 
 namespace App\Form\Type;
 
-use App\Form\Type\Model\LocationDto;
+use App\Form\Model\LocationDto;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -23,6 +23,7 @@ class LocationFormType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => LocationDto::class,
+            'csrf_protection' => false,
         ]);
     }
 

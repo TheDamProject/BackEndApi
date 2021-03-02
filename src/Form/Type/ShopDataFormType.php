@@ -23,6 +23,7 @@ class ShopDataFormType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => ShopDataDto::class,
+            'csrf_protection' => false,
         ]);
     }
 

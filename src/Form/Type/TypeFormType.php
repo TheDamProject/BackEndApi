@@ -19,6 +19,7 @@ class TypeFormType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => PostTypeDto::class,
+            'csrf_protection' => false,
         ]);
     }
     public function getName(): string

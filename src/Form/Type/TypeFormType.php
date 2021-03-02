@@ -2,7 +2,6 @@
 
 namespace App\Form\Type;
 
-use App\Entity\PostType;
 use App\Form\Model\PostTypeDto;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -20,15 +19,16 @@ class TypeFormType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => PostTypeDto::class,
+            'csrf_protection' => false,
         ]);
     }
-    public function getName()
+    public function getName(): string
     {
         return '';
 
     }
 
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return '';
     }

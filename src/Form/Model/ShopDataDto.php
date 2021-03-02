@@ -16,14 +16,15 @@ class ShopDataDto
     private ?int $id;
 
 
-    public static function createShopDataFromDto(self $shopDataDto) : ShopData
+    public static function createShopDataFromShopDtoRequest(ShopDto $shopDto, Shop $shop) : ShopData
     {
         $shopData = new ShopData();
 
-        $shopData->setPhone($shopDataDto->getPhone());
-        $shopData->setIsWhatsapp($shopDataDto->getIsWhatsapp());
-        $shopData->setDescription($shopDataDto->getDescription());
-        $shopData->setLogo($shopDataDto->getLogo());
+        $shopData->setPhone($shopDto->getPhone());
+        $shopData->setIsWhatsapp($shopDto->getIsWhatsapp());
+        $shopData->setDescription($shopDto->getDescription());
+        $shopData->setLogo($shopDto->getLogo());
+        $shopData->setShopRelated($shop);
 
         return $shopData;
     }

@@ -23,6 +23,7 @@ class LocationFormType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => LocationDto::class,
+            'csrf_protection' => false,
         ]);
     }
 

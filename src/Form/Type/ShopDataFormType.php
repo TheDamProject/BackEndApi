@@ -2,7 +2,6 @@
 
 namespace App\Form\Type;
 
-use App\Entity\ShopData;
 use App\Form\Model\ShopDataDto;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -24,6 +23,7 @@ class ShopDataFormType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => ShopDataDto::class,
+            'csrf_protection' => false,
         ]);
     }
 

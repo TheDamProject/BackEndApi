@@ -12,7 +12,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use FOS\RestBundle\Controller\Annotations as Rest;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class LocationController extends AbstractController
 {
@@ -25,6 +24,7 @@ class LocationController extends AbstractController
     public function getAllAction
     (
         LocationRepository $repository
+
     ): array
     {
         return  $repository->findAll();
@@ -35,6 +35,7 @@ class LocationController extends AbstractController
      * @Rest\View(serializerGroups={"location"}, serializerEnableMaxDepthChecks=true)
      * @param int $id
      * @param LocationRepository $repository
+     * @return Location
      * @throws EntityNotFoundException
      */
     public function getByIdAction

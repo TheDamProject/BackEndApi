@@ -4,8 +4,6 @@ namespace App\Form\Type;
 
 use App\Form\Model\ShopDto;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CollectionType;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -15,21 +13,25 @@ class ShopFormType extends AbstractType
     {
         $builder
             ->add('name')
-            ->add('location_id', IntegerType::class)
-            ->add('shopCategory_id', IntegerType::class)
-            ->add('data_collection',CollectionType::class,
-                [
-                'allow_add' => true,
-                'allow_delete' => true,
-                'entry_type' => ShopDataFormType::class
-                ])
-        ;
-    }
+            ->add('location_id')
+            ->add('latitude')
+            ->add('longitude')
+            ->add('address')
+            ->add('id_google')
+            ->add('shopData_id')
+            ->add('phone')
+            ->add('isWhatsapp')
+            ->add('description')
+            ->add('logo')
+            ->add('category_id')
+            ->add('category')
 
+        ;}
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
             'data_class' => ShopDto::class,
+            'csrf_protection' => false,
         ]);
     }
 

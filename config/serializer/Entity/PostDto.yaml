@@ -1,4 +1,4 @@
-App\Entity\Post:
+App\Entity\PostDto:
   attributes:
       id:
         groups : ['post']
@@ -6,10 +6,10 @@ App\Entity\Post:
         groups : ['post']
       content:
         groups : ['post']
+      type_id:
+        groups : ['post']
+      shopRelated_id:
+        groups : ['post']
       image:
-        groups : ['post']
-      type:
-        groups : ['post']
-      shopRelated:
         groups : ['post']
 

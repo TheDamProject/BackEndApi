@@ -57,7 +57,7 @@ class PostHandlerService
         $type = $this->typeRepository->find($postDto->getTypeId());
         $shop = $this->shopRepository->find($postDto->getShopRelatedId());
         $fileNameImage = $this->imageService->saveImage($postDto->getImage(),Constants::postImageDirectory );
-        $postDto->setImage($this->urlHelper->getAbsoluteUrl(Constants::postImageDirectory. $fileNameImage));
+        $postDto->setImage($this->urlHelper->getAbsoluteUrl(constants::pathOfImagesByDefault. $fileNameImage));
         if(!$type || !$shop) throw new Exception('DATA NOT FOUND');
 
         return PostDto::createEntityFromRequest($postDto , $type , $shop);

@@ -36,7 +36,8 @@
         "symfony/twig-bundle": "^5.2",
         "symfony/validator": "5.2.*",
         "symfony/web-profiler-bundle": "^5.2",
-        "symfony/yaml": "5.2.*"
+        "symfony/yaml": "5.2.*",
+        "zircote/swagger-php": "^3.1"
     },
     "require-dev": {
         "symfony/debug-bundle": "^5.2",
@@ -86,5 +87,7 @@
             "allow-contrib": false,
             "require": "5.2.*"
         }
-    }
+    },
+    "name": "",
+    "description": ""
 }

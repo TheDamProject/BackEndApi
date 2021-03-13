@@ -15,33 +15,33 @@ class ShopData
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    private $id;
+    private ?int $id;
 
     /**
      * @ORM\Column(type="integer")
      */
-    private $phone;
+    private ?int $phone;
 
     /**
      * @ORM\Column(type="boolean")
      */
-    private $isWhatsapp;
+    private ?bool $isWhatsapp;
 
     /**
      * @ORM\Column(type="text")
      */
-    private $description;
+    private ?string $description;
 
     /**
      * @ORM\Column(type="text", nullable=true)
      */
-    private $logo;
+    private ?string $logo;
 
     /**
      * @ORM\OneToOne(targetEntity=Shop::class, inversedBy="shopData", cascade={"persist", "remove"})
      * @ORM\JoinColumn(nullable=false)
      */
-    private $shopRelated;
+    private ?Shop $shopRelated;
 
     public function getId(): ?int
     {

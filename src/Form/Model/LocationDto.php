@@ -37,7 +37,16 @@ class LocationDto
 
         return $location;
     }
+    public static function createEntityFromShopDtoRequest(ShopDto $shopDto) : Location
+    {
+        $location = new Location();
+        $location->setLongitude($shopDto->getLongitude());
+        $location->setLatitude($shopDto->getLatitude());
+        $location->setaddress($shopDto->getaddress());
+        $location->setIdGoogle($shopDto->getIdGoogle());
 
+        return $location;
+    }
 
     /**
      * @return float|null
@@ -102,7 +111,6 @@ class LocationDto
     {
         $this->id_google = $id_google;
     }
-
 
 
 

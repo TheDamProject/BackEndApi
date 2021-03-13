@@ -1,0 +1,10 @@
+App\Entity\Client:
+  attributes:
+    id:
+      groups : ['client']
+    nick:
+      groups : ['client']
+    avatar:
+      groups : ['client']
+    uid:
+      groups : ['client']

@@ -11,4 +11,4 @@
 /vendor/
 ###< symfony/framework-bundle ###
 /Docker_dev/
-S
+composer.lock

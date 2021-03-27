@@ -88,6 +88,6 @@
             "require": "5.2.*"
         }
     },
-    "name": "",
-    "description": ""
+    "name": "back/golocal",
+    "description": "Backend Go Local application"
 }

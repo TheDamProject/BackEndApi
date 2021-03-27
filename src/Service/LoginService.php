@@ -34,7 +34,6 @@ class LoginService extends AbstractControllerAlias
         $clientFromDatabase = $this->clientRepository->findOneBy(['uid' => $uid]);
         if ($clientFromDatabase) {
             $clientDto = ClientDto::createDtoFromEntity($clientFromDatabase);
-            echo $clientDto->getNick();
             return [
                 'type' => "client",
                 'uid' => $clientFromDatabase->getUid(),

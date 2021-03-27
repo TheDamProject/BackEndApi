@@ -24,6 +24,12 @@ class Shop
      */
     private $name;
 
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $uid;
+
     /**
      * @ORM\OneToMany(targetEntity=Post::class, mappedBy="shopRelated")
      */
@@ -66,6 +72,22 @@ class Shop
         $this->name = $name;
 
         return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getUid()
+    {
+        return $this->uid;
+    }
+
+    /**
+     * @param mixed $uid
+     */
+    public function setUid($uid): void
+    {
+        $this->uid = $uid;
     }
 
     /**
@@ -137,5 +159,10 @@ class Shop
         $this->shopCategory = $shopCategory;
 
         return $this;
+    }
+
+    public function __toString():string
+    {
+        return (string) $this->getName();
     }
 }

@@ -9,13 +9,15 @@ use App\Repository\ClientRepository;
 use App\Service\ClientHandlerService;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityNotFoundException;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController as AbstractControllerAlias;
 use FOS\RestBundle\Controller\Annotations as Rest;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
+
 use Symfony\Component\HttpFoundation\Response;
 
 
-class ClientController extends AbstractController
+class ClientController extends AbstractControllerAlias
 {
     /**
      * @Rest\Get(path="/clients")
@@ -62,6 +64,7 @@ class ClientController extends AbstractController
      * @param EntityManagerInterface $entityManager
      * @param Request $request
      * @param ClientHandlerService $handlerService
+     * @return Client|FormInterface
      */
     public function postAddAction
     (

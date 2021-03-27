@@ -22,6 +22,7 @@ class ShopDto
     private ?string $logo;
     private ?int $category_id = null ;
     private ?string $category;
+    private ?string $uid;
 
 
     public static function createDtoFromEntity(Shop $shop) : self
@@ -41,6 +42,7 @@ class ShopDto
         $dto->setLogo($shop->getShopData()->getLogo());
         $dto->setCategoryId($shop->getShopCategory()->getId());
         $dto->setCategory($shop->getShopCategory()->getCategory());
+        $dto->setUid($shop->getUid());
 
         return $dto;
     }
@@ -267,6 +269,22 @@ class ShopDto
     public function setCategory(?string $category): void
     {
         $this->category = $category;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getUid(): ?string
+    {
+        return $this->uid;
+    }
+
+    /**
+     * @param string|null $uid
+     */
+    public function setUid(?string $uid): void
+    {
+        $this->uid = $uid;
     }
 
 

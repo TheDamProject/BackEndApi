@@ -3,7 +3,7 @@
 namespace App\Controller\Api;
 
 use App\Entity\ShopCategory;
-use App\Form\Type\Type\CategoryFormType;
+use App\Form\Type\CategoryFormType;
 use App\Repository\ShopCategoryRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityNotFoundException;

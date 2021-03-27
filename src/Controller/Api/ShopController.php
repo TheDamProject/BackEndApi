@@ -69,6 +69,8 @@ class ShopController extends AbstractController
      * @Rest\View(serializerGroups={"shop"}, serializerEnableMaxDepthChecks=true)
      * @param Request $request
      * @param LoggerInterface $log
+     * @param SerializerInterface $serializer
+     * @return array|FormInterface
      */
     public function addNewShopAction(Request $request, LoggerInterface $log, SerializerInterface $serializer)
     {
@@ -84,7 +86,6 @@ class ShopController extends AbstractController
                 'ShopData' => $data->getShopDataCreated(),
                 'Category' => $data->getCategoryCreated(),
                 'shop' => $data->getShopCreated()
-
             ];
         }
         return $form;

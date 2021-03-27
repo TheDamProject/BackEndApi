@@ -29,6 +29,16 @@ class ClientDto
         return $client;
     }
 
+    public static function createDtoFromEntity(Client $client) : ClientDto
+    {
+         $dto = new ClientDto;
+
+        $dto->setUid($client->getUid());
+        $dto->setNick($client->getNick());
+        $dto->setAvatar($client->getAvatar());
+        return $dto;
+    }
+
     /**
      * @return string|null
      */

@@ -12,3 +12,4 @@
 ###< symfony/framework-bundle ###
 /Docker_dev/
 composer.lock
+*.lock

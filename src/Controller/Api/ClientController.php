@@ -62,7 +62,6 @@ class ClientController extends AbstractController
      * @param EntityManagerInterface $entityManager
      * @param Request $request
      * @param ClientHandlerService $handlerService
-     * @return Response
      */
     public function postAddAction
     (
@@ -70,7 +69,7 @@ class ClientController extends AbstractController
         EntityManagerInterface $entityManager,
         Request $request,
         ClientHandlerService $handlerService
-    ): Response
+    )
     {
         $clientDto = new ClientDto();
 
@@ -83,14 +82,14 @@ class ClientController extends AbstractController
             $clientOnDb = $repository->findBy(['uid' => $client->getUid()]);
 
             if($clientOnDb){
-                return new Response('NOT  created. Exists? ' .$clientDto->getUid(), Response::HTTP_NOT_MODIFIED);
+                return $form;
             }else{
                 $entityManager->persist($client);
                 $entityManager->flush();
             }
 
         }
-        return new Response('Created :' .$clientDto->getUid(), Response::HTTP_CREATED);
+        return $client;
     }
 
     /**

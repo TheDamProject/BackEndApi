@@ -90,4 +90,5 @@
     },
     "name": "back/golocal",
     "description": "Backend Go Local application"
+    }
 }

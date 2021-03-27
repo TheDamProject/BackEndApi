@@ -87,5 +87,7 @@
             "allow-contrib": false,
             "require": "5.2.*"
         }
-    }
+    },
+    "name": "back/golocal",
+    "description": "THis is the backend of goLocAL"
 }

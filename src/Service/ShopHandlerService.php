@@ -72,7 +72,7 @@ class ShopHandlerService
 
     public function getOneShopById(int $id) : ShopDto
     {
-        $shopDto =   ShopDto::createDtoFromEntity($this->shopRepository->find($id));
+        $shopDto =  ShopDto::createDtoFromEntity($this->shopRepository->find($id));
 
         if(!$shopDto){
             throw new Exception('NO SHOP FOUND');
@@ -87,6 +87,7 @@ class ShopHandlerService
 
         $shop = new Shop();
         $shop->setName($shopDto->getName());
+        $shop->setUid($shopDto->getUid());
 
         $this->handleLocation($shopDto, $result, $shop);
         $this->handleCategory($shopDto, $result, $shop);

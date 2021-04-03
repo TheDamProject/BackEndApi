@@ -36,22 +36,22 @@ class ClientController extends AbstractControllerAlias
 
 
     /**
-     * @Rest\Get(path="/client/{id}")
+     * @Rest\Get(path="/client/{uid}")
      * @Rest\View(serializerGroups={"client"}, serializerEnableMaxDepthChecks=true)
-     * @param int $id
+     * @param string $uid
      * @param ClientRepository $repository
      * @return Client
      * @throws EntityNotFoundException
      */
-    public function getByIdAction
+    public function getByUIDAction
     (
-        int $id,
+        string $uid,
         ClientRepository $repository
     ): Client
     {
-        $client = $repository->find($id);
+        $client = $repository->findOneBy(['uid' => $uid]);
         if(!$client){
-            throw new EntityNotFoundException('The client with id '.$id.' does not exist!');
+            throw new EntityNotFoundException('The client with id '.$uid.' does not exist!');
         }
         return $client;
     }
@@ -64,7 +64,7 @@ class ClientController extends AbstractControllerAlias
      * @param EntityManagerInterface $entityManager
      * @param Request $request
      * @param ClientHandlerService $handlerService
-     * @return Client|FormInterface
+     * @return Response
      */
     public function postAddAction
     (
@@ -72,7 +72,7 @@ class ClientController extends AbstractControllerAlias
         EntityManagerInterface $entityManager,
         Request $request,
         ClientHandlerService $handlerService
-    )
+    ): Response
     {
         $clientDto = new ClientDto();
 
@@ -81,24 +81,22 @@ class ClientController extends AbstractControllerAlias
 
         if($form->isSubmitted() && $form->isValid() ){
             $client = $handlerService->createClientFromRequest($clientDto);
-
-            $clientOnDb = $repository->findBy(['uid' => $client->getUid()]);
+            $clientOnDb = $repository->findOneBy(['uid' => $client->getUid()]);
 
             if($clientOnDb){
-                return $form;
+                return new Response('Client EXISTS ',Response::HTTP_NOT_MODIFIED);
             }else{
                 $entityManager->persist($client);
                 $entityManager->flush();
             }
-
         }
-        return $client;
+        return new Response('Client CREATED ',Response::HTTP_CREATED);
     }
 
     /**
-     * @Rest\Delete("/client/delete/{id}")
+     * @Rest\Delete("/client/delete/{uid}")
      * @Rest\View(serializerGroups={"client"}, serializerEnableMaxDepthChecks=true)
-     * @param int $id
+     * @param string $uid
      * @param Request $request
      * @param ClientRepository $repository
      * @param EntityManagerInterface $entityManager
@@ -107,7 +105,7 @@ class ClientController extends AbstractControllerAlias
      */
     public function deleteAction
     (
-        int $id,
+        string $uid,
         Request $request,
         ClientRepository $repository,
         EntityManagerInterface $entityManager
@@ -119,14 +117,14 @@ class ClientController extends AbstractControllerAlias
         $form = $this->createForm(ClientFormType::class, $clientDto);
         $form->handleRequest($request);
 
-        $clientOnDb = $repository->find($id);
+        $clientOnDb = $repository->findOneBy(['uid' => $uid]);
 
         if($clientOnDb){
             $entityManager->remove($clientOnDb);
             $entityManager->flush();
-            return new Response('Client with id '. $id .' DELETED ',Response::HTTP_OK);
+            return new Response('Client with uid '. $uid .' DELETED ',Response::HTTP_OK);
         }else{
-            throw new EntityNotFoundException('I can NOT delete the client with id :  '.$id.' Sorry!!');
+            throw new EntityNotFoundException('I can NOT delete the client with uid :  '.$uid.' Sorry!!');
         }
     }
 

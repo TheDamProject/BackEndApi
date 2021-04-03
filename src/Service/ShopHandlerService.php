@@ -71,10 +71,10 @@ class ShopHandlerService
     }
 
 
-    public function getOneShopById(int $id) : ShopDto
+    public function getOneShopById(string $uid) : ShopDto
     {
-        $shopDto =  ShopDto::createDtoFromEntity($this->shopRepository->find($id));
-
+        $shopDto =  ShopDto::createDtoFromEntity($this->shopRepository->findOneBy(['uid' => $uid]));
+        echo $shopDto->getName();
         if(!$shopDto){
             throw new Exception('NO SHOP FOUND');
         }
@@ -97,7 +97,7 @@ class ShopHandlerService
         $shopFound = $this->shopRepository->findOneBy(['name' =>$shop->getName() , 'location' => $shop->getLocation()]);
         if(!$shopFound)
         {
-            $result->setShopCreated($this->persist($shop));
+            $result->setShopCreated(Response::HTTP_OK);
 
         }else{
             $result->setShopCreated(Response::HTTP_NOT_MODIFIED);

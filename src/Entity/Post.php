@@ -44,10 +44,6 @@ class Post
      */
     private $shopRelated;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Shop::class, inversedBy="postList")
-     */
-    private $shopRel;
 
     public function getId(): ?int
     {
@@ -114,15 +110,4 @@ class Post
         return $this;
     }
 
-    public function getShopRel(): ?Shop
-    {
-        return $this->shopRel;
-    }
-
-    public function setShopRel(?Shop $shopRel): self
-    {
-        $this->shopRel = $shopRel;
-
-        return $this;
-    }
 }

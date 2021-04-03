@@ -3,11 +3,13 @@
 namespace App\Controller\Api;
 
 
+use App\Entity\Shop;
 use App\Form\Model\ShopCreationInformerModel;
 use App\Form\Model\ShopDto;
 use App\Form\Model\ShopsRequestDto;
 use App\Form\Type\ShopFormType;
 use App\Form\Type\ShopListFormType;
+use App\Repository\ShopRepository;
 use App\Service\ShopHandlerService;
 use Doctrine\Common\Collections\ArrayCollection;
 use Exception;
@@ -38,26 +40,27 @@ class ShopController extends AbstractController
     /**
      * @Rest\Get(path="/shops")
      * @Rest\View(serializerGroups={"shop"}, serializerEnableMaxDepthChecks=true)
+     * @param ShopRepository $repo
+     * @return Shop[]
      */
-    public function getAllAction(): ArrayCollection
+    public function getAllAction(ShopRepository $repo): array
     {
-        return $this->handler->getAllShops();
+        return $repo->findAll();
     }
 
 
     /**
-     * @Rest\Get(path="/shop/{id}")
-     * @Rest\View(serializerGroups={"shop"}, serializerEnableMaxDepthChecks=true)
-     * @param int $id
-     * @return ShopDto|int
+     * @Rest\Get(path="/shop/{uid}")
+     * @Rest\View(serializerGroups={"shopDto"}, serializerEnableMaxDepthChecks=true)
+     * @param string $uid
      */
     public function getByIdAction
     (
-        int $id
+        string $uid
     )
     {
         try {
-            return $this->handler->getOneShopById($id);
+            return $this->handler->getOneShopById($uid);
         } catch (Exception $e) {
             return Response::HTTP_NOT_FOUND;
         }
@@ -68,7 +71,7 @@ class ShopController extends AbstractController
      * @Rest\Post(path="/shops")
      * @Rest\View(serializerGroups={"shop"}, serializerEnableMaxDepthChecks=true)
      * @param Request $request
-     * @return array|FormInterface
+     * @return Shop[]|int|Response
      */
     public function getShopsListAction(Request $request  )
     {
@@ -81,7 +84,7 @@ class ShopController extends AbstractController
 
             return $data;
         }
-        return $form;
+        return new Response('Ups ',Response::HTTP_NOT_FOUND);
     }
 
     /**
@@ -90,7 +93,6 @@ class ShopController extends AbstractController
      * @param Request $request
      * @param LoggerInterface $log
      * @param SerializerInterface $serializer
-     * @return array|FormInterface
      */
     public function addNewShopAction(Request $request, LoggerInterface $log, SerializerInterface $serializer)
     {
@@ -108,7 +110,7 @@ class ShopController extends AbstractController
                 'shop' => $data->getShopCreated()
             ];
         }
-        return $form;
+        return new Response('Ups Shop does not added',Response::HTTP_NOT_MODIFIED);
     }
 
     /**

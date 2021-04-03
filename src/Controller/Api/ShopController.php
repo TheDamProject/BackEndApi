@@ -5,12 +5,12 @@ namespace App\Controller\Api;
 
 use App\Form\Model\ShopCreationInformerModel;
 use App\Form\Model\ShopDto;
+use App\Form\Model\ShopsRequestDto;
 use App\Form\Type\ShopFormType;
-use App\Form\Type\ShopInformerModelFormType;
+use App\Form\Type\ShopListFormType;
 use App\Service\ShopHandlerService;
 use Doctrine\Common\Collections\ArrayCollection;
 use Exception;
-use Monolog\Logger;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
@@ -45,7 +45,6 @@ class ShopController extends AbstractController
     }
 
 
-
     /**
      * @Rest\Get(path="/shop/{id}")
      * @Rest\View(serializerGroups={"shop"}, serializerEnableMaxDepthChecks=true)
@@ -62,6 +61,27 @@ class ShopController extends AbstractController
         } catch (Exception $e) {
             return Response::HTTP_NOT_FOUND;
         }
+    }
+
+
+    /**
+     * @Rest\Post(path="/shops")
+     * @Rest\View(serializerGroups={"shop"}, serializerEnableMaxDepthChecks=true)
+     * @param Request $request
+     * @return array|FormInterface
+     */
+    public function getShopsListAction(Request $request  )
+    {
+        $shopRequestDto = new ShopsRequestDto();
+        $form = $this->createForm(ShopListFormType::class , $shopRequestDto);
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid()){
+            $data = $this->handler->getShopsAndPostsInRange($shopRequestDto);
+
+            return $data;
+        }
+        return $form;
     }
 
     /**

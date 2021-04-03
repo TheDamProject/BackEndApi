@@ -9,6 +9,7 @@ use App\Form\Model\LocationDto;
 use App\Form\Model\ShopCreationInformerModel;
 use App\Form\Model\ShopDataDto;
 use App\Form\Model\ShopDto;
+use App\Form\Model\ShopsRequestDto;
 use App\Repository\LocationRepository;
 use App\Repository\ShopCategoryRepository;
 use App\Repository\ShopDataRepository;
@@ -151,7 +152,6 @@ class ShopHandlerService
      */
     public function handleLocation(ShopDto $shopDto, ShopCreationInformerModel $result, Shop $shop): void
     {
-        if ($shopDto->getLocationId() == null) {
             $locationFound = $this->locationRepository->findOneBy(
                 ['latitude' => $shopDto->getLatitude(),
                     'longitude' => $shopDto->getLongitude()]);
@@ -164,10 +164,7 @@ class ShopHandlerService
                 $result->setLocationCreated(Response::HTTP_NOT_MODIFIED);
             }
             $shop->setLocation($location);
-        } else {
-            $shop->setLocation($this->locationRepository->find($shopDto->getLocationId()));
-            $result->setLocationCreated(Response::HTTP_NOT_MODIFIED);
-        }
+
     }
 
     /**
@@ -177,25 +174,22 @@ class ShopHandlerService
      */
     public function handleCategory(ShopDto $shopDto, ShopCreationInformerModel $result, Shop $shop): void
     {
-        if ($shopDto->getCategoryId() == null) {
-            $shopCategoryFound = $this->categoryRepository->findOneBy(
-                ['category' => $shopDto->getCategory()]);
 
-            $category = new ShopCategory();
+        $shopCategoryFound = $this->categoryRepository->findOneBy(
+            ['category' => $shopDto->getCategory()]);
 
-            if (!$shopCategoryFound) {
-                $category->setCategory($shopDto->getCategory());
-                $result->setCategoryCreated($this->persist($category));
-            } else {
-                $category = $shopCategoryFound;
-                $result->setCategoryCreated(Response::HTTP_NOT_MODIFIED);
+        $category = new ShopCategory();
 
-            }
-            $shop->setShopCategory($category);
+        if (!$shopCategoryFound) {
+            $category->setCategory($shopDto->getCategory());
+            $result->setCategoryCreated($this->persist($category));
         } else {
-            $shop->setShopCategory($this->categoryRepository->find($shopDto->getCategoryId()));
+            $category = $shopCategoryFound;
             $result->setCategoryCreated(Response::HTTP_NOT_MODIFIED);
+
         }
+        $shop->setShopCategory($category);
+
     }
 
     /**
@@ -205,25 +199,34 @@ class ShopHandlerService
      */
     public function handleShopData(ShopDto $shopDto, Shop $shop, ShopCreationInformerModel $result): void
     {
-        if ($shopDto->getShopDataId() == null) {
-            $shopDataFound = $this->shopDataRepository->findOneBy(
-                ['phone' => $shopDto->getPhone(),
-                    'description' => $shopDto->getDescription(),
-                    'logo' => $shopDto->getLogo()]);
-            if (!$shopDataFound) {
-                $fileNameLogo = $this->imageService->saveImage($shopDto->getLogo(), Constants::shopLogoDirectory);
-                $shopDto->setLogo($this->urlHelper->getAbsoluteUrl(constants::pathOfImagesByDefault . $fileNameLogo));
-                $shopData = ShopDataDto::createShopDataFromShopDtoRequest($shopDto, $shop);
-                $result->setShopDataCreated($this->persist($shopData));
-            } else {
-                $shopData = $shopDataFound;
-                $result->setShopDataCreated(Response::HTTP_NOT_MODIFIED);
-            }
-            $shop->setShopData($shopData);
+
+        $shopDataFound = $this->shopDataRepository->findOneBy(
+               ['phone' => $shopDto->getPhone(),
+                'description' => $shopDto->getDescription(),
+                'logo' => $shopDto->getLogo()]);
+        if (!$shopDataFound) {
+            $fileNameLogo = $this->imageService->saveImage($shopDto->getLogo(), Constants::shopLogoDirectory);
+            $shopDto->setLogo($this->urlHelper->getAbsoluteUrl(constants::pathOfImagesByDefault . $fileNameLogo));
+            $shopData = ShopDataDto::createShopDataFromShopDtoRequest($shopDto, $shop);
+            $result->setShopDataCreated($this->persist($shopData));
         } else {
-            $shop->setShopData($this->shopDataRepository->find($shopDto->getShopDataId()));
+            $shopData = $shopDataFound;
             $result->setShopDataCreated(Response::HTTP_NOT_MODIFIED);
         }
+
+        $shop->setShopData($shopData);
+
+
+    }
+
+    public function getShopsAndPostsInRange(ShopsRequestDto $shopRequestDto)
+    {
+        $shopsList = $this->shopRepository->findAll();
+
+        if($shopsList){
+            return $shopsList;
+        }
+        return  Response::HTTP_NOT_FOUND;
     }
 }
 

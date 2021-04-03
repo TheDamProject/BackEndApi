@@ -52,9 +52,15 @@ class Shop
      */
     private $shopCategory;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Post::class, mappedBy="shopRel")
+     */
+    private $postList;
+
     public function __construct()
     {
         $this->posts = new ArrayCollection();
+        $this->postList = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -164,5 +170,35 @@ class Shop
     public function __toString():string
     {
         return (string) $this->getName();
+    }
+
+    /**
+     * @return Collection|Post[]
+     */
+    public function getPostList(): Collection
+    {
+        return $this->postList;
+    }
+
+    public function addPostList(Post $postList): self
+    {
+        if (!$this->postList->contains($postList)) {
+            $this->postList[] = $postList;
+            $postList->setShopRel($this);
+        }
+
+        return $this;
+    }
+
+    public function removePostList(Post $postList): self
+    {
+        if ($this->postList->removeElement($postList)) {
+            // set the owning side to null (unless already changed)
+            if ($postList->getShopRel() === $this) {
+                $postList->setShopRel(null);
+            }
+        }
+
+        return $this;
     }
 }

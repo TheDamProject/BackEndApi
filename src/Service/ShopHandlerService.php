@@ -59,15 +59,14 @@ class ShopHandlerService
     }
 
 
-    public function getAllShops() : ArrayCollection
+    public function getAllShops(): array
     {
-        $shopsListDto = new ArrayCollection();
+        $shopsListDto = [];
         $shopsInRepository = $this->shopRepository->findAll();
 
         foreach ($shopsInRepository as $shop){
             $shopDto = ShopDto::createDtoFromEntity($shop);
-
-            $shopsListDto->add($shopDto);
+            array_push($shopsListDto ,$shopDto);
         }
 
         return $shopsListDto;

@@ -41,11 +41,10 @@ class ShopController extends AbstractController
      * @Rest\Get(path="/shops")
      * @Rest\View(serializerGroups={"shop"}, serializerEnableMaxDepthChecks=true)
      * @param ShopRepository $repo
-     * @return Shop[]
      */
     public function getAllAction(ShopRepository $repo): array
     {
-        return $repo->findAll();
+        return $this->handler->getAllShops();
     }
 
 

@@ -31,7 +31,7 @@ class Shop
     private $uid;
 
     /**
-     * @ORM\OneToMany(targetEntity=Post::class, mappedBy="shopRelated")
+     * @ORM\OneToMany(targetEntity=Post::class, mappedBy="shopId")
      */
     private $posts;
 

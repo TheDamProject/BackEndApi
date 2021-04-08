@@ -4,27 +4,31 @@
 namespace App\Form\Model;
 
 use App\Entity\Shop;
+use Doctrine\Common\Collections\Collection;
+
 
 class ShopDto
 {
 
     private ?int $id = null;
-    private ?string $name = "default";
-    private ?Float $latitude;
-    private ?Float $longitude;
-    private ?string $address;
-    private ?int $phone;
-    private ?bool $isWhatsapp;
-    private ?string $description;
-    private ?string $logo;
-    private ?string $category;
-    private ?string $uid;
+    private string $name = "default";
+    private Float $latitude;
+    private Float $longitude;
+    private string $address;
+    private int $phone;
+    private bool $isWhatsapp;
+    private string $description;
+    private string $logo;
+    private string $category;
+    private string $uid;
+    private ?Collection $posts;
 
 
     public static function createDtoFromEntity(Shop $shop) : self
     {
         $dto  = new self();
 
+        $dto->setId($shop->getId());
         $dto->setName($shop->getName());
         $dto->setLatitude($shop->getLocation()->getLatitude());
         $dto->setLongitude($shop->getLocation()->getLongitude());
@@ -35,8 +39,26 @@ class ShopDto
         $dto->setLogo($shop->getShopData()->getLogo());
         $dto->setCategory($shop->getShopCategory()->getCategory());
         $dto->setUid($shop->getUid());
+        $dto->setPosts($shop->getPosts());
+
 
         return $dto;
+    }
+
+    /**
+     * @return Collection|null
+     */
+    public function getPosts(): ?Collection
+    {
+        return $this->posts;
+    }
+
+    /**
+     * @param Collection|null $posts
+     */
+    public function setPosts(?Collection $posts): void
+    {
+        $this->posts = $posts;
     }
 
     /**

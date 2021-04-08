@@ -42,7 +42,8 @@ class Post
      * @ORM\ManyToOne(targetEntity=Shop::class, inversedBy="posts")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $shopRelated;
+    private $shopId;
+
 
 
     public function getId(): ?int
@@ -98,14 +99,14 @@ class Post
         return $this;
     }
 
-    public function getShopRelated(): ?Shop
+    public function getShopId(): ?Shop
     {
-        return $this->shopRelated;
+        return $this->shopId;
     }
 
-    public function setShopRelated(?Shop $shopRelated): self
+    public function setShopId(?Shop $shopId): self
     {
-        $this->shopRelated = $shopRelated;
+        $this->shopId = $shopId;
 
         return $this;
     }

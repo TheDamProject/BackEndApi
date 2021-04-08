@@ -1,9 +1,10 @@
-App\Entity\Shop:
+App\Form\Model\ShopDto:
   attributes:
     id:
-      groups : ['shop']
+      groups : ['shopDto']
     uid:
-      groups: [ 'shop' ]
+      groups: [ 'shopDto' ]
     name:
-      groups: [ 'shop' ]
-
+      groups: [ 'shopDto' ]
+    phone:
+      groups: [ 'shopDto' ]

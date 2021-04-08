@@ -21,6 +21,9 @@ use Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\UrlHelper;
+use Symfony\Component\Serializer\Serializer;
+use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
 
 
 class ShopHandlerService
@@ -63,6 +66,7 @@ class ShopHandlerService
 
         foreach ($shopsInRepository as $shop){
             $shopDto = ShopDto::createDtoFromEntity($shop);
+
             $shopsListDto->add($shopDto);
         }
 
@@ -71,14 +75,24 @@ class ShopHandlerService
     }
 
 
-    public function getOneShopById(string $uid) : ShopDto
+    public function getOneShopById(string $uid)
     {
-        $shopDto =  ShopDto::createDtoFromEntity($this->shopRepository->findOneBy(['uid' => $uid]));
-        echo $shopDto->getName();
-        if(!$shopDto){
-            throw new Exception('NO SHOP FOUND');
+
+        $shopFromDatabase = $this->shopRepository->findOneBy(['uid' => $uid]);
+
+        if($shopFromDatabase) {
+            $shopDto = ShopDto::createDtoFromEntity($shopFromDatabase);
+
+        }else{
+            return Response::HTTP_NOT_FOUND;
         }
+
+            if(!$shopDto){
+                return Response::HTTP_NOT_FOUND;
+            }
         return $shopDto;
+
+
     }
 
 

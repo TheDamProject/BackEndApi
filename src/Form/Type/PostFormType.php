@@ -14,11 +14,12 @@ class PostFormType extends AbstractType
     {
         $builder
             ->add('title')
-            ->add('type_id' , IntegerType::class)
-            ->add('shopRelated_id', IntegerType::class)
+            ->add('typeValue')
+            ->add('shopUid')
             ->add('content')
             ->add('image')
         ;
+
     }
 
     public function configureOptions(OptionsResolver $resolver)

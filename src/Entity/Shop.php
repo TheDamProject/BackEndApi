@@ -31,12 +31,12 @@ class Shop
     private $uid;
 
     /**
-     * @ORM\OneToMany(targetEntity=Post::class, mappedBy="shopId")
+     * @ORM\OneToMany(targetEntity=Post::class, mappedBy="shopId", cascade={"persist", "remove"})
      */
     private $posts;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Location::class, inversedBy="shopsInLocation")
+     * @ORM\ManyToOne(targetEntity=Location::class, inversedBy="shopsInLocation",cascade={"persist"})
      * @ORM\JoinColumn(nullable=false)
      */
     private $location;
@@ -47,7 +47,7 @@ class Shop
     private $shopData;
 
     /**
-     * @ORM\ManyToOne(targetEntity=ShopCategory::class, inversedBy="shopsInCategory")
+     * @ORM\ManyToOne(targetEntity=ShopCategory::class, inversedBy="shopsInCategory", cascade={"persist"})
      * @ORM\JoinColumn(nullable=false)
      */
     private $shopCategory;
@@ -56,7 +56,6 @@ class Shop
     public function __construct()
     {
         $this->posts = new ArrayCollection();
-        $this->postList = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -104,7 +103,7 @@ class Shop
     {
         if (!$this->posts->contains($post)) {
             $this->posts[] = $post;
-            $post->setShopRelated($this);
+            $post->setShopId($this);
         }
 
         return $this;
@@ -114,8 +113,8 @@ class Shop
     {
         if ($this->posts->removeElement($post)) {
             // set the owning side to null (unless already changed)
-            if ($post->getShopRelated() === $this) {
-                $post->setShopRelated(null);
+            if ($post->getShopId() === $this) {
+                $post->setShopId(null);
             }
         }
 

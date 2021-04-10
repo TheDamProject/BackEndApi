@@ -6,6 +6,7 @@ namespace App\Service;
 
 use App\Entity\ShopCategory;
 use App\Repository\ShopCategoryRepository;
+use Doctrine\DBAL\Exception;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -52,14 +53,19 @@ class CategoryHandler
 
     public function deleteCategoryById($id): Response
     {
-        $categoryOnDb = $this->categoryRepository->find($id);
 
-        if($categoryOnDb){
-            $this->entityManager->remove($categoryOnDb);
-            $this->entityManager->flush();
-            return new Response('CATEGORY with id '. $id .' DELETED ',Response::HTTP_OK);
-        }else{
-            return new Response('I can NOT delete the CATEGORY with id :  '.$id.' Sorry!!', Response::HTTP_NOT_MODIFIED);
+        try{
+            $categoryOnDb = $this->categoryRepository->find($id);
+            if($categoryOnDb){
+                $this->entityManager->remove($categoryOnDb);
+                $this->entityManager->flush();
+                return new Response('CATEGORY with id '. $id .' DELETED ',Response::HTTP_OK);
+            }else{
+                return new Response('I can NOT delete the CATEGORY with id :  '.$id.' Sorry!!', Response::HTTP_NOT_MODIFIED);
+            }
+        }catch (\Exception $exception){
+            return new Response('ERROR  '.$exception . ' Sorry!!', Response::HTTP_NOT_MODIFIED);
         }
+
     }
 }

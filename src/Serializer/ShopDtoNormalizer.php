@@ -41,6 +41,7 @@ class ShopDtoNormalizer implements ContextAwareNormalizerInterface
         $km = $distanceGenerator->distanceCalculation($point1['lat'], $point1['long'], $point2['lat'], $point2['long']);
 
         $data = $this->normalizer->normalize($shopDto,$format,$context);
+        $data['type'] = 'SHOP';
         $data['UID'] = $shopDto->getUid();
         $data['shopCategory'] = $shopDto->getCategory();
         $data['location'] =

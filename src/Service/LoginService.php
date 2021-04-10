@@ -43,7 +43,8 @@ class LoginService extends AbstractControllerAlias
 
         if ($clientFromDatabase) {
             return [
-               'uid' => $clientFromDatabase->getUid(),
+                'type' => 'CLIENT',
+                'uid' => $clientFromDatabase->getUid(),
                 'nick' => $clientFromDatabase->getNick(),
                 'avatar' => $clientFromDatabase->getAvatar()
             ];

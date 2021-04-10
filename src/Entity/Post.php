@@ -33,16 +33,16 @@ class Post
     private $image;
 
     /**
-     * @ORM\ManyToOne(targetEntity=PostType::class, inversedBy="postByType")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\ManyToOne(targetEntity=PostType::class, inversedBy="postByType", cascade={"persist"})
+     * @ORM\JoinColumn(nullable=true)
      */
     private $type;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Shop::class, inversedBy="posts")
+     * @ORM\ManyToOne(targetEntity=Shop::class, inversedBy="posts", cascade={"persist"})
      * @ORM\JoinColumn(nullable=false)
      */
-    private $shopId;
+    private ?Shop $shopId;
 
 
 

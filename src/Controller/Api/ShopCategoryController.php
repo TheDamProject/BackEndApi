@@ -68,7 +68,7 @@ class ShopCategoryController extends AbstractController
 
     ): Response
     {
-        $categoryHandler->deleteCategoryById($id);
+      return  $categoryHandler->deleteCategoryById($id);
 
     }
 

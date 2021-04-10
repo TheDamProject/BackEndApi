@@ -239,7 +239,7 @@ class ShopHandlerService
         if($shopsList){
             return $shopsList;
         }
-        return  Response::HTTP_NOT_FOUND;
+        return  new Response();
     }
 }
 

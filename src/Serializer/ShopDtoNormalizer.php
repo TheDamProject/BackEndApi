@@ -36,7 +36,7 @@ class ShopDtoNormalizer implements ContextAwareNormalizerInterface
 
         $data = $this->normalizer->normalize($shopDto,$format,$context);
         $data['type'] = 'SHOP';
-        $data['UID'] = $shopDto->getUid();
+        $data['uid'] = $shopDto->getUid();
         $data['shopCategory'] = $shopDto->getCategory();
         $data['location'] =
             [

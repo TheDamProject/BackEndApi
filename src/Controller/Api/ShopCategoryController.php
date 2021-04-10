@@ -4,13 +4,10 @@ namespace App\Controller\Api;
 
 use App\Entity\ShopCategory;
 use App\Form\Type\CategoryFormType;
-use App\Repository\ShopCategoryRepository;
-use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\EntityNotFoundException;
+use App\Service\CategoryHandler;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 use FOS\RestBundle\Controller\Annotations as Rest;
 
 class ShopCategoryController extends AbstractController
@@ -19,52 +16,29 @@ class ShopCategoryController extends AbstractController
     /**
      * @Rest\Get(path="/categories")
      * @Rest\View(serializerGroups={"category"}, serializerEnableMaxDepthChecks=true)
-     * @param ShopCategoryRepository $repository
-     * @return array
+     * @param CategoryHandler $categoryHandler
+     * @return ShopCategory[]|Response
      */
     public function getAllAction
     (
-        ShopCategoryRepository $repository
-    ): array
-    {
-        return  $repository->findAll();
-    }
-
-    /**
-     * @Rest\Get(path="/category/{id}")
-     * @Rest\View(serializerGroups={"category"}, serializerEnableMaxDepthChecks=true)
-     * @param int $id
-     * @param ShopCategoryRepository $repository
-     * @return ShopCategory|Response
-     * @throws EntityNotFoundException
-     */
-    public function getByIdAction
-    (
-        int $id,
-        ShopCategoryRepository $repository
+        CategoryHandler $categoryHandler
     )
     {
-        $shopCategory = $repository->find($id);
-        if(!$shopCategory){
-            throw new EntityNotFoundException('The category with id '.$id.' does not exist!');
-        }
-        return $shopCategory;
+        return $categoryHandler->getAllCategories();
     }
 
 
     /**
      * @Rest\Post(path="/category/add")
      * @Rest\View(serializerGroups={"category"}, serializerEnableMaxDepthChecks=true)
-     * @param ShopCategoryRepository $repository
-     * @param EntityManagerInterface $entityManager
      * @param Request $request
+     * @param CategoryHandler $categoryHandler
      * @return Response
      */
     public function postAddAction
     (
-        ShopCategoryRepository $repository,
-        EntityManagerInterface $entityManager,
-        Request $request
+        Request $request,
+        CategoryHandler $categoryHandler
     ): Response
     {
         $shopCategory = new ShopCategory();
@@ -74,17 +48,9 @@ class ShopCategoryController extends AbstractController
 
         if($form->isSubmitted() && $form->isValid() ){
 
-            $categoryOnDb = $repository->findBy(['category' => $shopCategory->getCategory()]);
-
-            if($categoryOnDb){
-                throw new HttpException(304,'The Category '. $shopCategory->getCategory().' exist!');
-            }else{
-               $entityManager->persist($shopCategory);
-               $entityManager->flush();
-            }
-
+           return $categoryHandler->addNewCategory($shopCategory);
         }
-        return new Response('Created :' .$shopCategory->getCategory(). '' , Response::HTTP_CREATED);
+        return  new Response('ERROR',Response::HTTP_BAD_REQUEST);
     }
 
 
@@ -92,35 +58,18 @@ class ShopCategoryController extends AbstractController
      * @Rest\Delete("/category/delete/{id}")
      * @Rest\View(serializerGroups={"category"}, serializerEnableMaxDepthChecks=true)
      * @param int $id
-     * @param Request $request
-     * @param ShopCategoryRepository $repository
-     * @param EntityManagerInterface $entityManager
+     * @param CategoryHandler $categoryHandler
      * @return Response
-     * @throws EntityNotFoundException
      */
     public function deleteAction
     (
         int $id,
-        Request $request,
-        ShopCategoryRepository $repository,
-        EntityManagerInterface $entityManager
+        CategoryHandler $categoryHandler
 
     ): Response
     {
-        $shopCategory = new ShopCategory();
+        $categoryHandler->deleteCategoryById($id);
 
-        $form = $this->createForm(CategoryFormType::class, $shopCategory);
-        $form->handleRequest($request);
-
-        $categoryOnDb = $repository->find($id);
-
-        if($categoryOnDb){
-            $entityManager->remove($categoryOnDb);
-            $entityManager->flush();
-            return new Response('PostType with id '. $id .' DELETED ',Response::HTTP_OK);
-        }else{
-            throw new EntityNotFoundException('I can NOT delete the PostType with id :  '.$id.' Sorry!!');
-        }
     }
 
 }

@@ -15,15 +15,10 @@ use App\Repository\ShopCategoryRepository;
 use App\Repository\ShopDataRepository;
 use App\Repository\ShopRepository;
 use App\Utils\Constants;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\UrlHelper;
-use Symfony\Component\Serializer\Serializer;
-use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
 
 
 class ShopHandlerService
@@ -47,7 +42,14 @@ class ShopHandlerService
      * @param ImageHandlerService $imageService
      * @param UrlHelper $urlHelper
      */
-    public function __construct(ShopRepository $shopRepository, LocationRepository $locationRepository, ShopCategoryRepository $categoryRepository, ShopDataRepository $shopDataRepository, EntityManagerInterface $entityManager, ImageHandlerService $imageService, UrlHelper $urlHelper)
+    public function __construct
+    (ShopRepository $shopRepository,
+     LocationRepository $locationRepository,
+     ShopCategoryRepository $categoryRepository,
+     ShopDataRepository $shopDataRepository,
+     EntityManagerInterface $entityManager,
+     ImageHandlerService $imageService,
+     UrlHelper $urlHelper)
     {
         $this->shopRepository = $shopRepository;
         $this->locationRepository = $locationRepository;

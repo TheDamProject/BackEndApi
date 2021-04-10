@@ -4,47 +4,61 @@
 namespace App\Form\Model;
 
 use App\Entity\Shop;
+use Doctrine\Common\Collections\Collection;
+
 
 class ShopDto
 {
 
     private ?int $id = null;
     private ?string $name = "default";
-    private ?int $location_id = null ;
     private ?Float $latitude;
     private ?Float $longitude;
     private ?string $address;
-    private ?string $id_google;
-    private ?int $shopData_id = null;
     private ?int $phone;
     private ?bool $isWhatsapp;
     private ?string $description;
     private ?string $logo;
-    private ?int $category_id = null ;
     private ?string $category;
     private ?string $uid;
+    private ?Collection $posts;
 
 
     public static function createDtoFromEntity(Shop $shop) : self
     {
         $dto  = new self();
 
+        $dto->setId($shop->getId());
         $dto->setName($shop->getName());
-        $dto->setLocationId($shop->getLocation()->getId());
         $dto->setLatitude($shop->getLocation()->getLatitude());
         $dto->setLongitude($shop->getLocation()->getLongitude());
         $dto->setAddress($shop->getLocation()->getAddress());
-        $dto->setIdGoogle($shop->getLocation()->getIdGoogle());
-        $dto->setShopDataId($shop->getShopData()->getId());
         $dto->setPhone($shop->getShopData()->getPhone());
         $dto->setIsWhatsapp($shop->getShopData()->getIsWhatsapp());
         $dto->setDescription($shop->getShopData()->getDescription());
         $dto->setLogo($shop->getShopData()->getLogo());
-        $dto->setCategoryId($shop->getShopCategory()->getId());
         $dto->setCategory($shop->getShopCategory()->getCategory());
         $dto->setUid($shop->getUid());
+        $dto->setPosts($shop->getPosts());
+
 
         return $dto;
+    }
+
+    /**
+     * @return Collection|null
+     */
+    public function getPosts(): ?Collection
+    {
+        return $this->posts;
+    }
+
+    /**
+     * @param Collection|null $posts
+     */
+    public function setPosts(?Collection $posts): void
+    {
+        $this->posts = $posts;
     }
 
     /**
@@ -77,22 +91,6 @@ class ShopDto
     public function setName(?string $name): void
     {
         $this->name = $name;
-    }
-
-    /**
-     * @return int|null
-     */
-    public function getLocationId(): ?int
-    {
-        return $this->location_id;
-    }
-
-    /**
-     * @param int|null $location_id
-     */
-    public function setLocationId(?int $location_id): void
-    {
-        $this->location_id = $location_id;
     }
 
     /**
@@ -141,38 +139,6 @@ class ShopDto
     public function setAddress(?string $address): void
     {
         $this->address = $address;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getIdGoogle(): ?string
-    {
-        return $this->id_google;
-    }
-
-    /**
-     * @param string|null $id_google
-     */
-    public function setIdGoogle(?string $id_google): void
-    {
-        $this->id_google = $id_google;
-    }
-
-    /**
-     * @return int|null
-     */
-    public function getShopDataId(): ?int
-    {
-        return $this->shopData_id;
-    }
-
-    /**
-     * @param int|null $shopData_id
-     */
-    public function setShopDataId(?int $shopData_id): void
-    {
-        $this->shopData_id = $shopData_id;
     }
 
     /**
@@ -240,22 +206,6 @@ class ShopDto
     }
 
     /**
-     * @return int|null
-     */
-    public function getCategoryId(): ?int
-    {
-        return $this->category_id;
-    }
-
-    /**
-     * @param int|null $category_id
-     */
-    public function setCategoryId(?int $category_id): void
-    {
-        $this->category_id = $category_id;
-    }
-
-    /**
      * @return string|null
      */
     public function getCategory(): ?string
@@ -286,6 +236,7 @@ class ShopDto
     {
         $this->uid = $uid;
     }
+
 
 
 }

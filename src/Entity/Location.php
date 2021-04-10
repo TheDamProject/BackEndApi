@@ -40,7 +40,7 @@ class Location
     private $id_google;
 
     /**
-     * @ORM\OneToMany(targetEntity=Shop::class, mappedBy="location")
+     * @ORM\OneToMany(targetEntity=Shop::class, mappedBy="location" , cascade={"persist"})
      */
     private $shopsInLocation;
 

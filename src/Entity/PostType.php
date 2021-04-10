@@ -25,7 +25,7 @@ class PostType
     private $type;
 
     /**
-     * @ORM\OneToMany(targetEntity=Post::class, mappedBy="type")
+     * @ORM\OneToMany(targetEntity=Post::class, mappedBy="type" , cascade={"persist"})
      */
     private $postByType;
 

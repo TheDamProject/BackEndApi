@@ -1,0 +1,10 @@
+App\Form\Model\ShopDto:
+  attributes:
+    id:
+      groups : ['shopDto']
+    uid:
+      groups: [ 'shopDto' ]
+    name:
+      groups: [ 'shopDto' ]
+    phone:
+      groups: [ 'shopDto' ]

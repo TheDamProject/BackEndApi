@@ -3,23 +3,17 @@
 namespace App\Controller\Api;
 
 
-use App\Form\Model\ShopCreationInformerModel;
+use App\Entity\Shop;
 use App\Form\Model\ShopDto;
+use App\Form\Model\ShopsRequestDto;
 use App\Form\Type\ShopFormType;
-use App\Form\Type\ShopInformerModelFormType;
+use App\Form\Type\ShopListFormType;
+use App\Repository\ShopRepository;
 use App\Service\ShopHandlerService;
-use Doctrine\Common\Collections\ArrayCollection;
-use Exception;
-use Monolog\Logger;
-use Psr\Log\LoggerInterface;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormInterface;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Serializer\SerializerInterface;
+use FOS\RestBundle\Controller\Annotations as Rest;
 
 class ShopController extends AbstractController
 {
@@ -38,77 +32,85 @@ class ShopController extends AbstractController
     /**
      * @Rest\Get(path="/shops")
      * @Rest\View(serializerGroups={"shop"}, serializerEnableMaxDepthChecks=true)
+     * @param ShopRepository $repo
+     * @return array|Response
      */
-    public function getAllAction(): ArrayCollection
+    public function getAllAction(ShopRepository $repo)
     {
         return $this->handler->getAllShops();
     }
 
 
-
     /**
-     * @Rest\Get(path="/shop/{id}")
-     * @Rest\View(serializerGroups={"shop"}, serializerEnableMaxDepthChecks=true)
-     * @param int $id
-     * @return ShopDto|int
+     * @Rest\Get(path="/shop/{uid}")
+     * @Rest\View(serializerGroups={"shopDto"}, serializerEnableMaxDepthChecks=true)
+     * @param string $uid
+     * @return ShopDto|Response
      */
     public function getByIdAction
     (
-        int $id
+        string $uid
     )
     {
-        try {
-            return $this->handler->getOneShopById($id);
-        } catch (Exception $e) {
-            return Response::HTTP_NOT_FOUND;
-        }
+        return $this->handler->getOneShopById($uid);
     }
 
     /**
      * @Rest\Post(path="/shop/add")
      * @Rest\View(serializerGroups={"shop"}, serializerEnableMaxDepthChecks=true)
      * @param Request $request
-     * @param LoggerInterface $log
-     * @param SerializerInterface $serializer
-     * @return array|FormInterface
+     * @return ShopDto|Response
      */
-    public function addNewShopAction(Request $request, LoggerInterface $log, SerializerInterface $serializer)
+    public function addNewShopAction(Request $request)
     {
         $shopDto = new ShopDto();
         $form = $this->createForm(ShopFormType::class, $shopDto);
         $form->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid()){
-            $data = $this->handler->createNewShop($shopDto);
-
-            return [
-                'location' => $data->getLocationCreated(),
-                'ShopData' => $data->getShopDataCreated(),
-                'Category' => $data->getCategoryCreated(),
-                'shop' => $data->getShopCreated()
-            ];
+            return $this->handler->createNewShop($shopDto);
         }
-        return $form;
+        return new Response('Ups Shop does not added',Response::HTTP_NOT_MODIFIED);
     }
 
     /**
-     * @Rest\Delete(path="/shop/delete/{id}")
+     * @Rest\Delete(path="/shop/delete/{uid}")
      * @Rest\View(serializerGroups={"shop"}, serializerEnableMaxDepthChecks=true)
-     * @param int $id
-     * @return ShopDto|int
+     * @param string $uid
+     * @return Response
      */
     public function deleteByIdAction
     (
-        int $id
-    )
+        string $uid
+    ): Response
     {
-        if($this->handler->deleteOneShopById($id)){
-            return Response::HTTP_OK;
-        }else{
-            return Response::HTTP_NOT_MODIFIED;
-        }
-
+        return $this->handler->deleteOneShopById($uid);
     }
+
+
+    /**
+     * @Rest\Post(path="/shops")
+     * @Rest\View(serializerGroups={"shop"}, serializerEnableMaxDepthChecks=true)
+     * @param Request $request
+     * @return Shop[]|int|Response
+     */
+    public function getShopsListAction(Request $request  )
+    {
+        $shopRequestDto = new ShopsRequestDto();
+        $form = $this->createForm(ShopListFormType::class , $shopRequestDto);
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid()){
+            $data = $this->handler->getShopsAndPostsInRange($shopRequestDto);
+
+            return $data;
+        }
+        return new Response('Ups ',Response::HTTP_NOT_FOUND);
+    }
+
+
+
+
 
 
 }

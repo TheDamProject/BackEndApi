@@ -14,11 +14,9 @@ class PostDto
     private ?int $id;
     private ?string $title;
     private ?string $content;
-    private ?int $type_id;
-    private ?int $shopRelated_id;
     private ?string $image;
-    private ?PostType $type;
-    private ?Shop $shopRelated;
+    private ?string $typeValue;
+    private ?string $shopUid;
 
     public static function createEntityFromRequest(PostDto $postDto, PostType $type, Shop $shopRelated) : Post
     {
@@ -28,12 +26,9 @@ class PostDto
         $post->setContent($postDto->getContent());
         $post->setImage($postDto->getImage());
         $post->setType($type);
-        $post->setShopRelated($shopRelated);
-
+        $post->setShopId($shopRelated);
         return $post;
     }
-
-
 
     /**
      * @return int|null
@@ -100,69 +95,36 @@ class PostDto
     }
 
     /**
-     * @return PostType|null
+     * @return string|null
      */
-    public function getType(): ?PostType
+    public function getTypeValue(): ?string
     {
-        return $this->type;
+        return $this->typeValue;
     }
 
     /**
-     * @param PostType|null $type
+     * @param string|null $typeValue
      */
-    public function setType(?PostType $type): void
+    public function setTypeValue(?string $typeValue): void
     {
-        $this->type = $type;
+        $this->typeValue = $typeValue;
     }
 
     /**
-     * @return Shop|null
+     * @return string|null
      */
-    public function getShopRelated(): ?Shop
+    public function getShopUid(): ?string
     {
-        return $this->shopRelated;
+        return $this->shopUid;
     }
 
     /**
-     * @param Shop|null $shopRelated
+     * @param string|null $shopUid
      */
-    public function setShopRelated(?Shop $shopRelated): void
+    public function setShopUid(?string $shopUid): void
     {
-        $this->shopRelated = $shopRelated;
+        $this->shopUid = $shopUid;
     }
-
-    /**
-     * @return int|null
-     */
-    public function getTypeId(): ?int
-    {
-        return $this->type_id;
-    }
-
-    /**
-     * @param int|null $type_id
-     */
-    public function setTypeId(?int $type_id): void
-    {
-        $this->type_id = $type_id;
-    }
-
-    /**
-     * @return int|null
-     */
-    public function getShopRelatedId(): ?int
-    {
-        return $this->shopRelated_id;
-    }
-
-    /**
-     * @param int|null $shopRelated_id
-     */
-    public function setShopRelatedId(?int $shopRelated_id): void
-    {
-        $this->shopRelated_id = $shopRelated_id;
-    }
-
 
 
 }

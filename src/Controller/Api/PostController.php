@@ -19,42 +19,6 @@ class PostController extends AbstractController
 {
 
     /**
-     * @Rest\Get(path="/posts")
-     * @Rest\View(serializerGroups={"post"}, serializerEnableMaxDepthChecks=true)
-     * @param PostRepository $repository
-     * @return array
-     */
-    public function getAllAction
-    (
-        PostRepository $repository
-    ): array
-    {
-
-       return $repository->findAll();
-    }
-
-    /**
-     * @Rest\Get(path="/post/{id}")
-     * @Rest\View(serializerGroups={"post"}, serializerEnableMaxDepthChecks=true)
-     * @param int $id
-     * @param PostRepository $repository
-     * @return Post
-     * @throws EntityNotFoundException
-     */
-    public function getByIdAction
-    (
-        int $id,
-        PostRepository $repository
-    ): Post
-    {
-        $post = $repository->find($id);
-        if(!$post){
-            throw new EntityNotFoundException('The post with id '.$id.' does not exist!');
-        }
-        return $post;
-    }
-
-    /**
      * @Rest\Post(path="/post/add")
      * @Rest\View(serializerGroups={"post"}, serializerEnableMaxDepthChecks=true)
      * @param PostHandlerService $handlerService
@@ -73,17 +37,9 @@ class PostController extends AbstractController
         $form->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid() ){
-            try {
-                $post = $handlerService->createPostFromRequest($postDto);
-            } catch (\Exception $e) {
-                return new Response('Post NOT CREATED  INCORRECT DATA REQUEST',  Response::HTTP_NOT_MODIFIED);
-            }
-
-            if(!$handlerService->persistPost($post)){
-                return new Response('Post NOT CREATED  ',  Response::HTTP_NOT_MODIFIED);
-            }
+            return $handlerService->createPostFromRequest($postDto);
         }
-        return new Response('Post Created Ok ',  Response::HTTP_CREATED);
+        return new Response('ERROR',  Response::HTTP_BAD_REQUEST);
     }
 
     /**
@@ -91,28 +47,16 @@ class PostController extends AbstractController
      * @Rest\View(serializerGroups={"post"}, serializerEnableMaxDepthChecks=true)
      * @param int $id
      * @param PostHandlerService $handlerService
-     * @param PostRepository $repository
      * @return Response
-     * @throws EntityNotFoundException
      */
     public function deleteByIdAction
     (
         int $id,
-        PostHandlerService $handlerService,
-        PostRepository $repository
-    )
+        PostHandlerService $handlerService
+    ): Response
     {
-        $post = $repository->find($id);
-        if(!$post){
-            throw new EntityNotFoundException('The Post with id '.$id.' does not exist!');
-        }
+       return $handlerService->deletePost($id);
 
-        try {
-            $handlerService->deletePost($post);
-        } catch (Exception $e) {
-           return new Response( $e , Response::HTTP_NOT_MODIFIED);
-        }
-        return new Response('Post deleted Ok' , Response::HTTP_OK);
     }
 
 

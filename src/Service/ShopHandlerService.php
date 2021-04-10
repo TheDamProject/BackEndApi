@@ -16,6 +16,7 @@ use App\Repository\ShopCategoryRepository;
 use App\Repository\ShopDataRepository;
 use App\Repository\ShopRepository;
 use App\Utils\Constants;
+use App\Utils\DistanceCalculation;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Component\HttpFoundation\Response;
@@ -32,6 +33,7 @@ class ShopHandlerService
     private EntityManagerInterface $entityManager;
     private ImageHandlerService $imageService;
     private UrlHelper $urlHelper;
+    private DistanceCalculation $distanceCalculation;
 
     /**
      * ShopHandlerService constructor.
@@ -41,6 +43,7 @@ class ShopHandlerService
      * @param ShopDataRepository $shopDataRepository
      * @param EntityManagerInterface $entityManager
      * @param ImageHandlerService $imageService
+     * @param DistanceCalculation $distanceCalculation
      * @param UrlHelper $urlHelper
      */
     public function __construct
@@ -50,6 +53,7 @@ class ShopHandlerService
      ShopDataRepository $shopDataRepository,
      EntityManagerInterface $entityManager,
      ImageHandlerService $imageService,
+     DistanceCalculation $distanceCalculation,
      UrlHelper $urlHelper)
     {
         $this->shopRepository = $shopRepository;
@@ -58,6 +62,7 @@ class ShopHandlerService
         $this->shopDataRepository = $shopDataRepository;
         $this->entityManager = $entityManager;
         $this->imageService = $imageService;
+        $this->distanceCalculation =  $distanceCalculation;
         $this->urlHelper = $urlHelper;
     }
 
@@ -236,16 +241,24 @@ class ShopHandlerService
 
 
 
-    public function getShopsAndPostsInRange(ShopsRequestDto $shopRequestDto)
+    public function getShopsAndPostsInRange(ShopsRequestDto $shopRequestDto): array
     {
+        $shopFiltered = [];
         $shopsList = $this->shopRepository->findAll();
 
-        if($shopsList){
-            return $shopsList;
-        }
-        return  new Response();
-    }
+        $point1 = array("lat" => $shopRequestDto->getLatitude(), "long" => $shopRequestDto->getLongitude());
+        $point2 = [];
+        foreach ($shopsList as $shop){
+            $point2 = array("lat" => $shop->getLocation()->getLatitude(), "long" =>  $shop->getLocation()->getLongitude());
+            $distance = $this->distanceCalculation->distanceCalculation($point1['lat'], $point1['long'], $point2['lat'], $point2['long']);
 
+            if($distance <= $shopRequestDto->getRange()){
+                array_push($shopFiltered , $shop);
+            }
+        }
+
+        return  $shopFiltered;
+    }
 
 }
 

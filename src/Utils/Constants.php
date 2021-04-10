@@ -12,5 +12,6 @@ class Constants
     const postImageDirectory = 'postImage';
     const postImagePre = 'Image';
     const CLIENT_AVATAR_DIRECTORY = 'avatars';
+    const METTERSMULTLIER = 1000;
 
 }

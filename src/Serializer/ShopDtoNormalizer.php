@@ -34,12 +34,6 @@ class ShopDtoNormalizer implements ContextAwareNormalizerInterface
     {
 
 
-        $point1 = array("lat" => "48.8666667", "long" => "2.3333333"); // París (Francia)
-        $point2 = array("lat" => "19.4341667", "long" => "-99.1386111"); // Ciudad de México (México)
-
-        $distanceGenerator = new  DistanceCalculation();
-        $km = $distanceGenerator->distanceCalculation($point1['lat'], $point1['long'], $point2['lat'], $point2['long']);
-
         $data = $this->normalizer->normalize($shopDto,$format,$context);
         $data['type'] = 'SHOP';
         $data['UID'] = $shopDto->getUid();
@@ -48,8 +42,7 @@ class ShopDtoNormalizer implements ContextAwareNormalizerInterface
             [
             'address' => $shopDto->getAddress(),
             'latitude' => $shopDto->getLatitude(),
-            'longitude' => $shopDto->getLongitude(),
-            'kmTest' => $km
+            'longitude' => $shopDto->getLongitude()
             ];
         $data['shopData'] =
             [

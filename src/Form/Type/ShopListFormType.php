@@ -3,6 +3,7 @@
 namespace App\Form\Type;
 
 
+use App\Form\Model\ShopsRequestDto;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -21,7 +22,7 @@ class ShopListFormType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => ShopListFormType::class,
+            'data_class' => ShopsRequestDto::class,
         ]);
     }
 

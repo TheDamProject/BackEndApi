@@ -11,16 +11,16 @@ class ShopDto
 {
 
     private ?int $id = null;
-    private string $name = "default";
-    private Float $latitude;
-    private Float $longitude;
-    private string $address;
-    private int $phone;
-    private bool $isWhatsapp;
-    private string $description;
-    private string $logo;
-    private string $category;
-    private string $uid;
+    private ?string $name = "default";
+    private ?Float $latitude;
+    private ?Float $longitude;
+    private ?string $address;
+    private ?int $phone;
+    private ?bool $isWhatsapp;
+    private ?string $description;
+    private ?string $logo;
+    private ?string $category;
+    private ?string $uid;
     private ?Collection $posts;
 
 

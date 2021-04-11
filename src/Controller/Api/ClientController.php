@@ -54,12 +54,11 @@ class ClientController extends AbstractControllerAlias
      * @Rest\Post(path="/client/add")
      * @Rest\View(serializerGroups={"client"}, serializerEnableMaxDepthChecks=true)
      * @param Request $request
-     * @return Response
      */
     public function postAddAction
     (
         Request $request
-    ): Response
+    )
     {
         $clientDto = new ClientDto();
         $form = $this->createForm(ClientFormType::class, $clientDto);

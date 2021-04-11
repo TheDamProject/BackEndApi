@@ -4,6 +4,7 @@
 namespace App\Service;
 
 
+use App\Entity\Client;
 use App\Form\Model\ClientDto;
 use App\Repository\ClientRepository;
 use App\Utils\Constants;
@@ -43,7 +44,7 @@ class ClientHandlerService
         return  new Response('No clients in database ',Response::HTTP_NO_CONTENT);
     }
 
-    public function createClientFromRequest(ClientDto $clientDto): Response
+    public function createClientFromRequest(ClientDto $clientDto)
     {
         $fileNameImage = $this->imageService->saveImage($clientDto->getAvatar(),Constants::CLIENT_AVATAR_DIRECTORY );
         $clientDto->setAvatar($this->urlHelper->getAbsoluteUrl(constants::pathOfImagesByDefault. $fileNameImage));
@@ -58,7 +59,7 @@ class ClientHandlerService
             $this->entityManager->persist($client);
             $this->entityManager->flush();
 
-            return new Response('Client created ',Response::HTTP_CREATED);
+            return $client;
         }
 
     }

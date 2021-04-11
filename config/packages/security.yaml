@@ -9,7 +9,7 @@ security:
         DOC:
             pattern: ^/api/doc
             security: false
-        api:
+        main:
             pattern: ^/api
             anonymous: lazy
             provider: app_user_provider

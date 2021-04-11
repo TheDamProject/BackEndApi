@@ -50,6 +50,7 @@ class ShopDtoNormalizer implements ContextAwareNormalizerInterface
             foreach ( $shopDto->getPosts() as $post){
                 array_push($postList , [
                     'id' => $post->getId(),
+                    'UIDshop' => $shopDto->getUid(),
                     'title' => $post->getTitle(),
                     'content' => $post->getContent(),
                     'type' => $post->getType()->getType(),

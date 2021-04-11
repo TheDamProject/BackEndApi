@@ -6,7 +6,6 @@ namespace App\Service;
 
 use App\Entity\ShopCategory;
 use App\Repository\ShopCategoryRepository;
-use Doctrine\DBAL\Exception;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -34,37 +33,38 @@ class CategoryHandler
         if($categoryList){
             return $categoryList;
         }
-        return  new Response('NO CATEGORIES IN DATABASE',Response::HTTP_NO_CONTENT);
+        return  new Response(Response::HTTP_NO_CONTENT);
     }
 
 
-    public function addNewCategory(ShopCategory $shopCategory): Response
+    public function addNewCategory(ShopCategory $shopCategory)
     {
         $categoryOnDb = $this->categoryRepository->findBy(['category' => $shopCategory->getCategory()]);
 
         if($categoryOnDb){
-            return  new Response('This category EXISTS on database',Response::HTTP_NOT_MODIFIED);
+            return  new Response(null,Response::HTTP_NOT_MODIFIED);
         }else{
             $this->entityManager->persist($shopCategory);
             $this->entityManager->flush();
-            return new Response('Created :' .$shopCategory->getCategory(). '' , Response::HTTP_CREATED);
+            return $shopCategory;
         }
     }
 
-    public function deleteCategoryById($id): Response
+    public function deleteCategoryById($id)
     {
 
         try{
             $categoryOnDb = $this->categoryRepository->find($id);
             if($categoryOnDb){
+                $category = $categoryOnDb;
                 $this->entityManager->remove($categoryOnDb);
                 $this->entityManager->flush();
-                return new Response('CATEGORY with id '. $id .' DELETED ',Response::HTTP_OK);
+                return $category;
             }else{
-                return new Response('I can NOT delete the CATEGORY with id :  '.$id.' Sorry!!', Response::HTTP_NOT_MODIFIED);
+                return new Response(null,Response::HTTP_NOT_MODIFIED);
             }
         }catch (\Exception $exception){
-            return new Response('ERROR  '.$exception . ' Sorry!!', Response::HTTP_NOT_MODIFIED);
+            return new Response(null,Response::HTTP_NOT_MODIFIED);
         }
 
     }

@@ -4,5 +4,3 @@ App\Entity\Shop:
       groups : ['shop']
     uid:
       groups: [ 'shop' ]
-    name:
-      groups: [ 'shop' ]

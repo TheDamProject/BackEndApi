@@ -204,11 +204,11 @@ class ShopHandlerService
                         $this->removeOneBiId($post);
                     }
 
-                    return  new Response('Shop and ShopData Deleted from Database' ,Response::HTTP_OK);
+                    return  new Response(null,Response::HTTP_OK);
                 }
             }
         }
-        return  new Response('NOT DELETED, Shop width UID '. $uid .' not found' ,Response::HTTP_BAD_REQUEST);
+        return  new Response($shop,Response::HTTP_BAD_REQUEST);
     }
 
 
@@ -247,13 +247,14 @@ class ShopHandlerService
         $shopsList = $this->shopRepository->findAll();
 
         $point1 = array("lat" => $shopRequestDto->getLatitude(), "long" => $shopRequestDto->getLongitude());
-        $point2 = [];
         foreach ($shopsList as $shop){
-            $point2 = array("lat" => $shop->getLocation()->getLatitude(), "long" =>  $shop->getLocation()->getLongitude());
+            $shopDto = ShopDto::createDtoFromEntity($shop);
+
+            $point2 = array("lat" => $shopDto->getLatitude(), "long" =>  $shopDto->getLongitude());
             $distance = $this->distanceCalculation->distanceCalculation($point1['lat'], $point1['long'], $point2['lat'], $point2['long']);
 
             if($distance <= $shopRequestDto->getRange()){
-                array_push($shopFiltered , $shop);
+                array_push($shopFiltered , $shopDto);
             }
         }
 

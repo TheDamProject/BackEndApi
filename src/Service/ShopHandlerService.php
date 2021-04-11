@@ -79,7 +79,7 @@ class ShopHandlerService
             }
             return $shopsListDto;
         }
-        return new Response('NO SHOPS IN DATABASE ' ,Response::HTTP_NOT_FOUND);
+        return new Response(null,Response::HTTP_NOT_FOUND);
     }
 
 
@@ -92,11 +92,11 @@ class ShopHandlerService
             $shopDto = ShopDto::createDtoFromEntity($shopFromDatabase);
 
         }else{
-            return  new Response('Shop not found IN DATABASE ' ,Response::HTTP_NOT_FOUND);
+            return  new Response(null ,Response::HTTP_NOT_FOUND);
         }
 
             if(!$shopDto){
-                return  new Response('Shop not found IN DATABASE' ,Response::HTTP_NOT_FOUND);
+                return  new Response(null,Response::HTTP_NOT_FOUND);
             }
         return $shopDto;
 
@@ -128,7 +128,7 @@ class ShopHandlerService
 
             return ShopDto::createDtoFromEntity($shop);
         }else{
-            return new Response('Shop has in database', Response::HTTP_NOT_MODIFIED);
+            return new Response(null, Response::HTTP_NOT_MODIFIED);
         }
 
     }
@@ -186,7 +186,7 @@ class ShopHandlerService
     }
 
 
-    public function deleteOneShopById(string $uid): Response
+    public function deleteOneShopById(string $uid)
     {
         $shop = $this->shopRepository->findOneBy(
         [
@@ -204,7 +204,7 @@ class ShopHandlerService
                         $this->removeOneBiId($post);
                     }
 
-                    return  new Response(null,Response::HTTP_OK);
+                    return  $shop;
                 }
             }
         }

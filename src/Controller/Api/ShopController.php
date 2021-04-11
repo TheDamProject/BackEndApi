@@ -70,8 +70,32 @@ class ShopController extends AbstractController
         if($form->isSubmitted() && $form->isValid()){
             return $this->handler->createNewShop($shopDto);
         }
-        return new Response('Ups Shop does not added',Response::HTTP_NOT_MODIFIED);
+        return new Response(null,Response::HTTP_BAD_REQUEST);
     }
+
+    /**
+     * @Rest\Post(path="/shop/update")
+     * @Rest\View(serializerGroups={"shop"}, serializerEnableMaxDepthChecks=true)
+     * @param Request $request
+     */
+    public function updateAction(Request $request)
+    {
+        $shopDto = new ShopDto();
+
+        $form = $this->createForm(ShopFormType::class, $shopDto);
+
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid()){
+            if($shopDto->getLogo() === " "){
+                return new Response(null,Response::HTTP_BAD_REQUEST);
+            }
+            return $this->handler->updateShop($shopDto);
+        }
+        return $form;
+
+    }
+
 
     /**
      * @Rest\Delete(path="/shop/delete/{uid}")
@@ -105,7 +129,7 @@ class ShopController extends AbstractController
 
             return $data;
         }
-        return new Response('Ups ',Response::HTTP_NOT_FOUND);
+        return new Response(null,Response::HTTP_NOT_FOUND);
     }
 
 

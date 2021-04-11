@@ -13,12 +13,14 @@ class ShopDto
     private ?int $id = null;
     private ?string $name = "default";
     private ?Float $latitude;
+
+
     private ?Float $longitude;
     private ?string $address;
     private ?int $phone;
-    private ?bool $isWhatsapp;
+    private bool $isWhatsapp;
     private ?string $description;
-    private ?string $logo;
+    private string $logo;
     private ?string $category;
     private ?string $uid;
     private ?Collection $posts;
@@ -43,22 +45,6 @@ class ShopDto
 
 
         return $dto;
-    }
-
-    /**
-     * @return Collection|null
-     */
-    public function getPosts(): ?Collection
-    {
-        return $this->posts;
-    }
-
-    /**
-     * @param Collection|null $posts
-     */
-    public function setPosts(?Collection $posts): void
-    {
-        $this->posts = $posts;
     }
 
     /**
@@ -158,17 +144,17 @@ class ShopDto
     }
 
     /**
-     * @return bool|null
+     * @return bool
      */
-    public function getIsWhatsapp(): ?bool
+    public function getisWhatsapp(): bool
     {
         return $this->isWhatsapp;
     }
 
     /**
-     * @param bool|null $isWhatsapp
+     * @param bool $isWhatsapp
      */
-    public function setIsWhatsapp(?bool $isWhatsapp): void
+    public function setIsWhatsapp(bool $isWhatsapp): void
     {
         $this->isWhatsapp = $isWhatsapp;
     }
@@ -190,17 +176,17 @@ class ShopDto
     }
 
     /**
-     * @return string|null
+     * @return string
      */
-    public function getLogo(): ?string
+    public function getLogo(): string
     {
         return $this->logo;
     }
 
     /**
-     * @param string|null $logo
+     * @param string $logo
      */
-    public function setLogo(?string $logo): void
+    public function setLogo(string $logo): void
     {
         $this->logo = $logo;
     }
@@ -236,6 +222,23 @@ class ShopDto
     {
         $this->uid = $uid;
     }
+
+    /**
+     * @return Collection|null
+     */
+    public function getPosts(): ?Collection
+    {
+        return $this->posts;
+    }
+
+    /**
+     * @param Collection|null $posts
+     */
+    public function setPosts(?Collection $posts): void
+    {
+        $this->posts = $posts;
+    }
+
 
 
 

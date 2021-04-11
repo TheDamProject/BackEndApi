@@ -54,6 +54,7 @@ class ClientController extends AbstractControllerAlias
      * @Rest\Post(path="/client/add")
      * @Rest\View(serializerGroups={"client"}, serializerEnableMaxDepthChecks=true)
      * @param Request $request
+     * @return Client|Response
      */
     public function postAddAction
     (
@@ -67,7 +68,7 @@ class ClientController extends AbstractControllerAlias
         if($form->isSubmitted() && $form->isValid() ){
            return $this->clientService->createClientFromRequest($clientDto);
         }
-        return new Response('ERROR',Response::HTTP_BAD_REQUEST);
+        return new Response(null,Response::HTTP_BAD_REQUEST);
     }
 
     /**

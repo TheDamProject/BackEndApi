@@ -17,6 +17,8 @@ use App\Repository\ShopDataRepository;
 use App\Repository\ShopRepository;
 use App\Utils\Constants;
 use App\Utils\DistanceCalculation;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Component\HttpFoundation\Response;
@@ -213,14 +215,14 @@ class ShopHandlerService
 
 
 
-    private function persist($entity):int
+    private function persist($entity)
     {
         try {
             $this->entityManager->persist($entity);
             $this->flushChanges();
-            return Response::HTTP_OK;
+            return  new Response(null,Response::HTTP_OK);
         }catch (Exception $ex){
-            return Response::HTTP_NOT_MODIFIED;
+            return new Response(null,Response::HTTP_NOT_MODIFIED);
         }
 
     }
@@ -259,6 +261,46 @@ class ShopHandlerService
         }
 
         return  $shopFiltered;
+    }
+
+    public function updateShop(ShopDto $shopDto)
+    {
+
+
+        $shopFromDatabase = $this->shopRepository->findOneBy(
+            [
+                'uid' => $shopDto->getUid()
+            ]);
+
+        if(!$shopFromDatabase){
+            return  new Response(null,Response::HTTP_NOT_FOUND);
+        }
+
+        $shopFromDatabase->setName($shopDto->getName());
+
+        $shopDto->setPosts($shopFromDatabase->getPosts());
+
+        $shopFromDatabase->getLocation()->setLongitude($shopDto->getLongitude());
+        $shopFromDatabase->getLocation()->setLatitude($shopDto->getLatitude());
+        $shopFromDatabase->getLocation()->setAddress($shopDto->getAddress());
+
+
+        $shopFromDatabase->getShopData()->setDescription($shopDto->getDescription());
+        $shopFromDatabase->getShopData()->setIsWhatsapp($shopDto->getIsWhatsapp());
+        $shopFromDatabase->getShopData()->setPhone($shopDto->getPhone());
+        $shopFromDatabase->getShopData()->setShopRelated( $shopFromDatabase);
+
+        if($shopDto->getLogo() != $shopFromDatabase->getShopData()->getLogo()) {
+            $fileNameLogo = $this->imageService->saveImage($shopDto->getLogo(), Constants::shopLogoDirectory);
+            $shopFromDatabase->getShopData()->setLogo($this->urlHelper->getAbsoluteUrl(constants::pathOfImagesByDefault . $fileNameLogo));
+        }
+
+        $shopFromDatabase->setShopCategory($this->handleCategory($shopDto));
+
+        $this->entityManager->persist($shopFromDatabase);
+        $this->entityManager->flush();
+
+        return $shopFromDatabase;
     }
 
 }

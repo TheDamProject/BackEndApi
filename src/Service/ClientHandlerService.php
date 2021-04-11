@@ -41,7 +41,7 @@ class ClientHandlerService
         if($clientList){
             return $clientList;
         }
-        return  new Response('No clients in database ',Response::HTTP_NO_CONTENT);
+        return  new Response(null,Response::HTTP_NO_CONTENT);
     }
 
     public function createClientFromRequest(ClientDto $clientDto)
@@ -54,7 +54,7 @@ class ClientHandlerService
         $clientOnDb = $this->clientRepository->findOneBy(['uid' => $client->getUid()]);
 
         if($clientOnDb){
-            return new Response('Client EXISTS ',Response::HTTP_NOT_MODIFIED);
+            return new Response(null,Response::HTTP_NOT_MODIFIED);
         }else{
             $this->entityManager->persist($client);
             $this->entityManager->flush();
@@ -68,21 +68,21 @@ class ClientHandlerService
     {
         $client = $this->clientRepository->findOneBy(['uid' => $uid]);
         if(!$client){
-            return  new Response('The client width'. $uid . 'does not exists',Response::HTTP_NO_CONTENT);
+            return  new Response(null,Response::HTTP_NO_CONTENT);
         }
         return $client;
     }
 
-    public function deleteClientByUID(string $uid): Response
+    public function deleteClientByUID(string $uid)
     {
         $clientOnDb = $this->clientRepository->findOneBy(array('uid' => $uid));
 
         if($clientOnDb){
             $this->entityManager->remove($clientOnDb);
             $this->entityManager->flush();
-            return new Response('Client with id '. $uid .' DELETED ',Response::HTTP_OK);
+            return $clientOnDb;
         }
-        return new Response('Can not delete Client with uid '. $uid ,Response::HTTP_NOT_MODIFIED);
+        return new Response(null,Response::HTTP_NOT_MODIFIED);
 
     }
 

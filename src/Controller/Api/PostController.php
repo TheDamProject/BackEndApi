@@ -46,7 +46,7 @@ class PostController extends AbstractController
         if($form->isSubmitted() && $form->isValid() ){
             return $handlerService->createPostFromRequest($postDto);
         }
-        return new Response('ERROR',  Response::HTTP_BAD_REQUEST);
+        return new Response(null,  Response::HTTP_BAD_REQUEST);
     }
 
     /**

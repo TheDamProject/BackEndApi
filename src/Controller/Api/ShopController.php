@@ -77,12 +77,12 @@ class ShopController extends AbstractController
      * @Rest\Delete(path="/shop/delete/{uid}")
      * @Rest\View(serializerGroups={"shop"}, serializerEnableMaxDepthChecks=true)
      * @param string $uid
-     * @return Response
+     * @return Shop|Response
      */
     public function deleteByIdAction
     (
         string $uid
-    ): Response
+    )
     {
         return $this->handler->deleteOneShopById($uid);
     }

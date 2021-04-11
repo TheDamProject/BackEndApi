@@ -1,0 +1,10 @@
+App\Entity\Post:
+  attributes:
+    id:
+      groups : ['postEntity']
+    title:
+      groups : ['postEntity']
+    content:
+      groups : ['postEntity']
+    image:
+      groups : ['postEntity']

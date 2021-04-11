@@ -3,12 +3,6 @@ namespace App\Serializer;
 
 
 use App\Form\Model\ShopDto;
-use App\Repository\ShopRepository;
-use App\Utils\DistanceCalculation;
-use Symfony\Component\Serializer\Exception\CircularReferenceException;
-use Symfony\Component\Serializer\Exception\ExceptionInterface;
-use Symfony\Component\Serializer\Exception\InvalidArgumentException;
-use Symfony\Component\Serializer\Exception\LogicException;
 use Symfony\Component\Serializer\Normalizer\ContextAwareNormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 

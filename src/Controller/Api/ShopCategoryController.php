@@ -33,13 +33,12 @@ class ShopCategoryController extends AbstractController
      * @Rest\View(serializerGroups={"category"}, serializerEnableMaxDepthChecks=true)
      * @param Request $request
      * @param CategoryHandler $categoryHandler
-     * @return Response
      */
     public function postAddAction
     (
         Request $request,
         CategoryHandler $categoryHandler
-    ): Response
+    )
     {
         $shopCategory = new ShopCategory();
 
@@ -50,7 +49,7 @@ class ShopCategoryController extends AbstractController
 
            return $categoryHandler->addNewCategory($shopCategory);
         }
-        return  new Response('ERROR',Response::HTTP_BAD_REQUEST);
+        return  $form;
     }
 
 
@@ -59,14 +58,12 @@ class ShopCategoryController extends AbstractController
      * @Rest\View(serializerGroups={"category"}, serializerEnableMaxDepthChecks=true)
      * @param int $id
      * @param CategoryHandler $categoryHandler
-     * @return Response
      */
     public function deleteAction
     (
         int $id,
         CategoryHandler $categoryHandler
-
-    ): Response
+    )
     {
       return  $categoryHandler->deleteCategoryById($id);
 

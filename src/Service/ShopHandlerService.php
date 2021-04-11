@@ -79,7 +79,7 @@ class ShopHandlerService
             }
             return $shopsListDto;
         }
-        return new Response('NO SHOPS IN DATABASE ' ,Response::HTTP_NOT_FOUND);
+        return new Response(null,Response::HTTP_NOT_FOUND);
     }
 
 
@@ -92,11 +92,11 @@ class ShopHandlerService
             $shopDto = ShopDto::createDtoFromEntity($shopFromDatabase);
 
         }else{
-            return  new Response('Shop not found IN DATABASE ' ,Response::HTTP_NOT_FOUND);
+            return  new Response(null ,Response::HTTP_NOT_FOUND);
         }
 
             if(!$shopDto){
-                return  new Response('Shop not found IN DATABASE' ,Response::HTTP_NOT_FOUND);
+                return  new Response(null,Response::HTTP_NOT_FOUND);
             }
         return $shopDto;
 
@@ -128,7 +128,7 @@ class ShopHandlerService
 
             return ShopDto::createDtoFromEntity($shop);
         }else{
-            return new Response('Shop has in database', Response::HTTP_NOT_MODIFIED);
+            return new Response(null, Response::HTTP_NOT_MODIFIED);
         }
 
     }
@@ -186,7 +186,7 @@ class ShopHandlerService
     }
 
 
-    public function deleteOneShopById(string $uid): Response
+    public function deleteOneShopById(string $uid)
     {
         $shop = $this->shopRepository->findOneBy(
         [
@@ -204,11 +204,11 @@ class ShopHandlerService
                         $this->removeOneBiId($post);
                     }
 
-                    return  new Response('Shop and ShopData Deleted from Database' ,Response::HTTP_OK);
+                    return  $shop;
                 }
             }
         }
-        return  new Response('NOT DELETED, Shop width UID '. $uid .' not found' ,Response::HTTP_BAD_REQUEST);
+        return  new Response($shop,Response::HTTP_BAD_REQUEST);
     }
 
 
@@ -247,13 +247,14 @@ class ShopHandlerService
         $shopsList = $this->shopRepository->findAll();
 
         $point1 = array("lat" => $shopRequestDto->getLatitude(), "long" => $shopRequestDto->getLongitude());
-        $point2 = [];
         foreach ($shopsList as $shop){
-            $point2 = array("lat" => $shop->getLocation()->getLatitude(), "long" =>  $shop->getLocation()->getLongitude());
+            $shopDto = ShopDto::createDtoFromEntity($shop);
+
+            $point2 = array("lat" => $shopDto->getLatitude(), "long" =>  $shopDto->getLongitude());
             $distance = $this->distanceCalculation->distanceCalculation($point1['lat'], $point1['long'], $point2['lat'], $point2['long']);
 
             if($distance <= $shopRequestDto->getRange()){
-                array_push($shopFiltered , $shop);
+                array_push($shopFiltered , $shopDto);
             }
         }
 

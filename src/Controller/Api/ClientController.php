@@ -7,8 +7,8 @@ use App\Form\Model\ClientDto;
 use App\Form\Type\ClientFormType;
 use App\Service\ClientHandlerService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController as AbstractControllerAlias;
-use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpFoundation\Request;
+use FOS\RestBundle\Controller\Annotations as Rest;
 
 use Symfony\Component\HttpFoundation\Response;
 
@@ -54,12 +54,11 @@ class ClientController extends AbstractControllerAlias
      * @Rest\Post(path="/client/add")
      * @Rest\View(serializerGroups={"client"}, serializerEnableMaxDepthChecks=true)
      * @param Request $request
-     * @return Response
      */
     public function postAddAction
     (
         Request $request
-    ): Response
+    )
     {
         $clientDto = new ClientDto();
         $form = $this->createForm(ClientFormType::class, $clientDto);
@@ -76,14 +75,13 @@ class ClientController extends AbstractControllerAlias
      * @Rest\View(serializerGroups={"client"}, serializerEnableMaxDepthChecks=true)
      * @param string $uid
      * @param Request $request
-     * @return Response
      */
     public function deleteByUidAction
     (
         string $uid,
         Request $request
 
-    ): Response
+    )
     {
         $clientDto = new ClientDto();
         $form = $this->createForm(ClientFormType::class, $clientDto);

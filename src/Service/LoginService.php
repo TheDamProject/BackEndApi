@@ -55,7 +55,7 @@ class LoginService extends AbstractControllerAlias
             return $this->shopHandler->getOneShopById($uid);
         }
 
-        return new Response('ERROR NOT FOUND',Response::HTTP_NOT_FOUND);
+        return new Response(null,Response::HTTP_NOT_FOUND);
     }
 
 

@@ -1,4 +1,4 @@
-App\Entity\PostDto:
+App\Form\Model\PostDto:
   attributes:
       id:
         groups : ['post']

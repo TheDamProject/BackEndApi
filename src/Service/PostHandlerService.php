@@ -47,7 +47,13 @@ class PostHandlerService
     }
 
 
-    public function createPostFromRequest(PostDto $postDto): Response
+    public function getAllPosts()
+    {
+        return $this->postRepository->findAll();
+    }
+
+
+    public function createPostFromRequest(PostDto $postDto)
     {
 
         $typeFromDb = $this->typeRepository->findOneBy(['type' => $postDto->getTypeValue()] ) ;
@@ -64,17 +70,17 @@ class PostHandlerService
         $shop = $this->shopRepository->find($this->shopRepository->findOneBy(['uid' => $postDto->getShopUid()] ));
 
         if(!$shop) {
-            return new Response('ERROR SHOP NOT FOUND.',  Response::HTTP_NOT_FOUND);
+            return new Response(null,  Response::HTTP_NOT_FOUND);
         }
 
         $fileNameImage = $this->imageService->saveImage($postDto->getImage(),Constants::postImageDirectory );
         $postDto->setImage($this->urlHelper->getAbsoluteUrl(constants::pathOfImagesByDefault. $fileNameImage));
-
-        if($this->persistPost(PostDto::createEntityFromRequest($postDto , $typeFromDb, $shop))){
-            return  new Response('Post created .',  Response::HTTP_CREATED);
+        $postCreated = PostDto::createEntityFromRequest($postDto , $typeFromDb, $shop);
+        if($this->persistPost($postCreated)){
+            return $postCreated;
         }
 
-        return new Response('ERROR AL CREAR EL POST',  Response::HTTP_BAD_REQUEST);
+        return new Response(null,  Response::HTTP_BAD_REQUEST);
     }
 
     public function persistPost(Post $post): bool
@@ -88,7 +94,7 @@ class PostHandlerService
         }
     }
 
-    public function deletePost(int $postId): Response
+    public function deletePost(int $postId)
     {
 
         try{
@@ -98,15 +104,14 @@ class PostHandlerService
                 $this->imageService->deleteImage($post->getImage());
                 $this->entityManager->remove($post);
                 $this->entityManager->flush();
-                return new Response('POST ELIMINADO',  Response::HTTP_OK);
+                return $post;
             }
-            return  new Response('POST NO ENCONTRADO',  Response::HTTP_NOT_FOUND);
+            return  new Response(null,  Response::HTTP_NOT_FOUND);
 
         }catch (Exception $exception){
-            return new Response('ERROR ELIMINAR EL POST',  Response::HTTP_NOT_MODIFIED);
+            return new Response(null,  Response::HTTP_NOT_MODIFIED);
         }
     }
-
 
 
 

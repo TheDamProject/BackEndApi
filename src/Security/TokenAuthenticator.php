@@ -2,7 +2,6 @@
 
 namespace App\Security;
 
-use App\Utils\Constants;
 use Symfony\Component\DependencyInjection\ParameterBag\ContainerBagInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -44,11 +43,12 @@ class TokenAuthenticator extends AbstractGuardAuthenticator
     public function getCredentials(Request $request): ?string
     {
         return $request->headers->get('X-AUTH-TOKEN');
+
     }
 
     public function getUser($credentials, UserProviderInterface $userProvider): ?UserInterface
     {
-        if(Token::TOKEN_API !== $credentials){
+        if(Token::TOKEN_API !== $credentials ){
             return null;
         }
         return new User();
@@ -57,8 +57,7 @@ class TokenAuthenticator extends AbstractGuardAuthenticator
 
     public function checkCredentials($credentials, UserInterface $user): bool
     {
-
-        return true;
+      return true;
     }
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
